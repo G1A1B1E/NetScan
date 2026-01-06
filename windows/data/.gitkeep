@@ -1,0 +1,8 @@
+# NetScan OUI Database
+# This file will be populated with IEEE OUI data during installation.
+# 
+# To manually download:
+#   - Visit: https://standards-oui.ieee.org/oui/oui.txt
+#   - Or run: install.ps1
+#
+# Format: XX-XX-XX   (hex)		Vendor Name
