@@ -1,0 +1,30 @@
+[package]
+name = "netscan_core"
+version = "0.1.0"
+edition = "2021"
+description = "High-performance core functions for NetScan"
+
+[lib]
+name = "netscan_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.20", features = ["extension-module"] }
+tokio = { version = "1.35", features = ["full"] }
+pnet = "0.34"
+rayon = "1.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+regex = "1.10"
+ipnetwork = "0.20"
+socket2 = "0.5"
+dns-lookup = "2.0"
+memmap2 = "0.9"
+dashmap = "5.5"
+parking_lot = "0.12"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
+strip = true
