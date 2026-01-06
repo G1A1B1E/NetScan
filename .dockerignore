@@ -1,0 +1,82 @@
+# Docker ignore file - exclude unnecessary files from build context
+
+# Git
+.git
+.gitignore
+.github
+
+# Documentation (not needed in container)
+*.md
+!README.md
+docs/
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# Rust build artifacts (we build fresh in Docker)
+rust_helpers/target/
+rust_helpers/Cargo.lock
+
+# Test files
+tests/
+test_*.py
+*_test.py
+
+# Example/sample data
+example/
+*.example
+*.sample
+
+# Logs and cache (we mount these as volumes)
+logs/
+cache/
+exports/
+reports/
+*.log
+
+# Environment files
+.env
+.env.*
+*.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# IDE
+*.sublime-*
+.project
+.pydevproject
+.settings/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Build artifacts
+*.o
+*.a
+*.dylib
