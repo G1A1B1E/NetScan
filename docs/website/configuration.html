@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html" class="active">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>Configuration</h1>
+            <p class="lead">Customize NetScan's behavior through configuration files and environment variables.</p>
+
+            <h2>Configuration File</h2>
+            <p>NetScan looks for config at <code>~/.netscan/config.json</code>:</p>
+            <pre><code class="language-json">{
+  "default_interface": "en0",
+  "scan_timeout": 5,
+  "scan_threads": 50,
+  "cache_ttl": 3600,
+  "log_level": "INFO",
+  "oui_update_interval": 604800,
+  "web_port": 8080,
+  "web_bind": "127.0.0.1"
+}</code></pre>
+
+            <h2>Environment Variables</h2>
+            <table class="doc-table">
+                <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+                <tr><td><code>NETSCAN_HOME</code></td><td>~/.netscan</td><td>Data directory</td></tr>
+                <tr><td><code>NETSCAN_LOG_LEVEL</code></td><td>INFO</td><td>DEBUG, INFO, WARN, ERROR</td></tr>
+                <tr><td><code>NETSCAN_TIMEOUT</code></td><td>5</td><td>Network timeout (seconds)</td></tr>
+                <tr><td><code>NETSCAN_THREADS</code></td><td>auto</td><td>Concurrent scan threads</td></tr>
+                <tr><td><code>NETSCAN_CACHE_TTL</code></td><td>3600</td><td>Cache lifetime (seconds)</td></tr>
+            </table>
+            <pre><code class="language-bash"># Set environment variable
+export NETSCAN_LOG_LEVEL=DEBUG
+netscan -s
+
+# Or inline
+NETSCAN_TIMEOUT=10 netscan -s</code></pre>
+
+            <h2>Directory Structure</h2>
+            <pre><code class="language-text">~/.netscan/
+├── config.json      # Configuration file
+├── cache/           # Lookup cache
+├── data/            # OUI database
+├── logs/            # Log files
+├── exports/         # Exported results
+└── reports/         # Generated reports</code></pre>
+
+            <h2>OUI Database</h2>
+            <pre><code class="language-bash"># Update OUI database
+netscan --update-oui
+
+# Custom OUI source
+export NETSCAN_OUI_URL="https://example.com/oui.txt"
+netscan --update-oui</code></pre>
+
+            <h2>Logging</h2>
+            <pre><code class="language-bash"># Enable debug logging
+netscan -s -v
+NETSCAN_LOG_LEVEL=DEBUG netscan -s
+
+# Log to file
+netscan -s --log-file ~/netscan.log</code></pre>
+
+            <h2>Cache Settings</h2>
+            <pre><code class="language-bash"># Disable cache
+netscan -l 00:50:56:C0:00:08 --no-cache
+
+# Clear cache
+rm -rf ~/.netscan/cache/*
+
+# Set cache TTL (1 hour)
+export NETSCAN_CACHE_TTL=3600</code></pre>
+
+            <h2>Network Defaults</h2>
+            <pre><code class="language-json">{
+  "default_interface": "en0",
+  "default_target": "auto",
+  "scan_timeout": 5,
+  "ping_count": 1,
+  "arp_timeout": 2
+}</code></pre>
+
+            <footer class="doc-footer"><div class="footer-nav">
+                <div class="footer-prev"><a href="web-interface.html"><span>Previous</span><strong>← Web Interface</strong></a></div>
+                <div class="footer-next"><a href="api.html"><span>Next</span><strong>Python API →</strong></a></div>
+            </div></footer>
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

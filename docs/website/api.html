@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference - NetScan Documentation</title>
+    <meta name="description" content="Python API reference for programmatic access to NetScan functionality.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⌘</span>
+                <span class="logo-text">NetScan</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Docs</a>
+                <a href="installation.html">Installation</a>
+                <a href="usage.html">Usage</a>
+                <a href="api.html" class="active">API</a>
+                <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">
+                    <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    GitHub
+                </a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="search-box">
+                    <input type="text" placeholder="Search docs..." id="search-input">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <div class="nav-section">
+                        <h3>Getting Started</h3>
+                        <ul>
+                            <li><a href="index.html">Introduction</a></li>
+                            <li><a href="installation.html">Installation</a></li>
+                            <li><a href="quickstart.html">Quick Start</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Core Features</h3>
+                        <ul>
+                            <li><a href="usage.html">Basic Usage</a></li>
+                            <li><a href="mac-lookup.html">MAC Lookup</a></li>
+                            <li><a href="network-scanning.html">Network Scanning</a></li>
+                            <li><a href="monitoring.html">Monitoring</a></li>
+                            <li><a href="web-interface.html">Web Interface</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Advanced</h3>
+                        <ul>
+                            <li><a href="configuration.html">Configuration</a></li>
+                            <li><a href="api.html" class="active">Python API</a></li>
+                            <li><a href="performance.html">Performance</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Reference</h3>
+                        <ul>
+                            <li><a href="cli-reference.html">CLI Reference</a></li>
+                            <li><a href="troubleshooting.html">Troubleshooting</a></li>
+                            <li><a href="changelog.html">Changelog</a></li>
+                            <li><a href="contributing.html">Contributing</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <article class="doc-content">
+                <h1>Python API Reference</h1>
+                <p class="lead">Programmatic access to NetScan's functionality for integration into your Python applications and scripts.</p>
+
+                <!-- Overview -->
+                <section id="overview">
+                    <h2>Overview</h2>
+                    <p>NetScan provides several Python modules that can be imported directly:</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-python"># MAC Address lookup
+from helpers.mac_lookup import lookup_mac, lookup_vendor
+
+# Network scanning
+from helpers.scanner import NetworkScanner
+
+# OUI database
+from helpers.oui_parser import OUIDatabase
+
+# Network utilities
+from helpers.network_utils import get_local_ip, get_network_interfaces
+
+# High-performance operations (if Rust module compiled)
+from helpers.fast_core import normalize_mac, expand_cidr</code></pre>
+                    </div>
+                </section>
+
+                <!-- MAC Lookup -->
+                <section id="mac-lookup">
+                    <h2>MAC Lookup Module</h2>
+                    <p>Look up vendor information for MAC addresses.</p>
+
+                    <h3>lookup_mac(mac_address)</h3>
+                    <p>Look up vendor information for a single MAC address.</p>
+
+                    <div class="api-signature">
+                        <code>lookup_mac(mac_address: str) -> dict</code>
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>mac_address</code></td>
+                                <td>str</td>
+                                <td>MAC address in any standard format</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Returns</h4>
+                    <p>Dictionary containing vendor information:</p>
+                    <div class="code-block">
+                        <pre><code class="language-python">{
+    "mac": "00:50:56:C0:00:08",
+    "vendor": "VMware, Inc.",
+    "oui": "00:50:56",
+    "is_private": False,
+    "is_multicast": False
+}</code></pre>
+                    </div>
+
+                    <h4>Example</h4>
+                    <div class="code-block">
+                        <pre><code class="language-python">from helpers.mac_lookup import lookup_mac
+
+# Look up a MAC address
+result = lookup_mac("00:50:56:C0:00:08")
+print(f"Vendor: {result['vendor']}")  # VMware, Inc.
+
+# Different formats work
+result = lookup_mac("00-50-56-C0-00-08")
+result = lookup_mac("005056C00008")</code></pre>
+                    </div>
+
+                    <h3>lookup_vendor(mac_address)</h3>
+                    <p>Get just the vendor name (faster than full lookup).</p>
+
+                    <div class="api-signature">
+                        <code>lookup_vendor(mac_address: str) -> str</code>
+                    </div>
+
+                    <div class="code-block">
+                        <pre><code class="language-python">from helpers.mac_lookup import lookup_vendor
+
+vendor = lookup_vendor("AC:DE:48:00:11:22")
+print(vendor)  # "Apple, Inc."</code></pre>
+                    </div>
+
+                    <h3>batch_lookup(mac_addresses)</h3>
+                    <p>Look up multiple MAC addresses efficiently.</p>
+
+                    <div class="api-signature">
+                        <code>batch_lookup(mac_addresses: List[str]) -> List[dict]</code>
+                    </div>
+
+                    <div class="code-block">
+                        <pre><code class="language-python">from helpers.mac_lookup import batch_lookup
+
+macs = [
+    "00:50:56:C0:00:08",
+    "AC:DE:48:00:11:22",
+    "B8:27:EB:12:34:56"
+]
+
+results = batch_lookup(macs)
+for result in results:
+    print(f"{result['mac']}: {result['vendor']}")</code></pre>
+                    </div>
+                </section>
+
+                <!-- Network Scanner -->
+                <section id="scanner">
+                    <h2>Network Scanner Module</h2>
+                    <p>Discover devices on the network.</p>
+
+                    <h3>NetworkScanner Class</h3>
+                    <div class="api-signature">
+                        <code>class NetworkScanner(target: str = None, interface: str = None)</code>
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>target</code></td>
+                                <td>str</td>
+                                <td>Target network in CIDR notation (auto-detected if not provided)</td>
+                            </tr>
+                            <tr>
+                                <td><code>interface</code></td>
+                                <td>str</td>
+                                <td>Network interface to use (auto-detected if not provided)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Example</h4>
+                    <div class="code-block">
+                        <pre><code class="language-python">from helpers.scanner import NetworkScanner
+
+# Create scanner (auto-detect network)
+scanner = NetworkScanner()
+
+# Or specify target
+scanner = NetworkScanner(target="192.168.1.0/24")
+
+# Quick scan
+devices = scanner.quick_scan()
+for device in devices:
+    print(f"{device['ip']} - {device['mac']} - {device['vendor']}")
+
+# Full scan with ports
+devices = scanner.full_scan()
+for device in devices:
+    print(f"{device['ip']}: ports {device.get('ports', [])}")</code></pre>
+                    </div>
+
+                    <h3>Methods</h3>
+
+                    <h4>quick_scan()</h4>
+                    <p>Fast network discovery using ARP and ping.</p>
+                    <div class="api-signature">
+                        <code>quick_scan() -> List[dict]</code>
+                    </div>
+                    <div class="code-block">
+                        <pre><code class="language-python">devices = scanner.quick_scan()
+# Returns list of:
+# {
+#     "ip": "192.168.1.1",
+#     "mac": "00:11:22:AA:BB:CC",
+#     "vendor": "Netgear",
+#     "hostname": "router.local",
+#     "status": "online"
+# }</code></pre>
+                    </div>
+
+                    <h4>full_scan(ports=None)</h4>
+                    <p>Deep scan including port detection.</p>
+                    <div class="api-signature">
+                        <code>full_scan(ports: List[int] = None) -> List[dict]</code>
+                    </div>
+                    <div class="code-block">
+                        <pre><code class="language-python"># Default common ports
+devices = scanner.full_scan()
+
+# Custom port list
+devices = scanner.full_scan(ports=[22, 80, 443, 8080, 3389])
+
+# Returns list with port information:
+# {
+#     "ip": "192.168.1.10",
+#     "mac": "AC:DE:48:00:11:22",
+#     "vendor": "Apple, Inc.",
+#     "hostname": "macbook.local",
+#     "ports": [22, 80],
+#     "services": {"22": "ssh", "80": "http"}
+# }</code></pre>
+                    </div>
+
+                    <h4>arp_scan()</h4>
+                    <p>ARP-only scan (fastest, requires privileges).</p>
+                    <div class="api-signature">
+                        <code>arp_scan() -> List[dict]</code>
+                    </div>
+
+                    <h4>ping_scan()</h4>
+                    <p>ICMP ping sweep.</p>
+                    <div class="api-signature">
+                        <code>ping_scan() -> List[dict]</code>
+                    </div>
+                </section>
+
+                <!-- OUI Database -->
+                <section id="oui-database">
+                    <h2>OUI Database Module</h2>
+                    <p>Direct access to the OUI (Organizationally Unique Identifier) database.</p>
+
+                    <h3>OUIDatabase Class</h3>
+                    <div class="code-block">
+                        <pre><code class="language-python">from helpers.oui_parser import OUIDatabase
+
+# Load database
+db = OUIDatabase()
+
+# Look up OUI
+vendor = db.lookup("00:50:56")
+print(vendor)  # "VMware, Inc."
+
+# Search vendors
+results = db.search("Apple")
+for oui, vendor in results:
+    print(f"{oui}: {vendor}")
+
+# Get all entries for vendor
+apple_ouis = db.get_vendor_ouis("Apple")
+print(f"Apple has {len(apple_ouis)} registered OUIs")</code></pre>
+                    </div>
+
+                    <h3>Methods</h3>
+
+                    <h4>lookup(oui)</h4>
+                    <div class="api-signature">
+                        <code>lookup(oui: str) -> str</code>
+                    </div>
+
+                    <h4>search(query)</h4>
+                    <div class="api-signature">
+                        <code>search(query: str) -> List[Tuple[str, str]]</code>
+                    </div>
+
+                    <h4>update()</h4>
+                    <p>Download and update the OUI database.</p>
+                    <div class="api-signature">
+                        <code>update() -> bool</code>
+                    </div>
+                    <div class="code-block">
+                        <pre><code class="language-python">db = OUIDatabase()
+if db.update():
+    print("Database updated successfully")
+else:
+    print("Update failed")</code></pre>
+                    </div>
+                </section>
+
+                <!-- Network Utilities -->
+                <section id="utilities">
+                    <h2>Network Utilities</h2>
+                    <p>Helper functions for network operations.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-python">from helpers.network_utils import (
+    get_local_ip,
+    get_network_interfaces,
+    get_default_gateway,
+    get_network_cidr,
+    is_private_ip,
+    validate_ip,
+    validate_mac
+)
+
+# Get local IP address
+ip = get_local_ip()
+print(f"Local IP: {ip}")  # 192.168.1.10
+
+# Get all network interfaces
+interfaces = get_network_interfaces()
+for iface in interfaces:
+    print(f"{iface['name']}: {iface['ip']}")
+
+# Get default gateway
+gateway = get_default_gateway()
+print(f"Gateway: {gateway}")  # 192.168.1.1
+
+# Get network CIDR for current network
+cidr = get_network_cidr()
+print(f"Network: {cidr}")  # 192.168.1.0/24
+
+# Validate addresses
+print(is_private_ip("192.168.1.1"))  # True
+print(is_private_ip("8.8.8.8"))       # False
+print(validate_ip("192.168.1.1"))     # True
+print(validate_mac("00:11:22:33:44:55"))  # True</code></pre>
+                    </div>
+                </section>
+
+                <!-- Fast Core -->
+                <section id="fast-core">
+                    <h2>Fast Core Module (Rust)</h2>
+                    <p>High-performance operations using the optional Rust backend.</p>
+
+                    <div class="info-box">
+                        <strong>💡 Note:</strong> The fast_core module automatically falls back to pure Python if the Rust module is not compiled. You can use it without worrying about availability.
+                    </div>
+
+                    <div class="code-block">
+                        <pre><code class="language-python">from helpers.fast_core import (
+    normalize_mac,
+    normalize_mac_batch,
+    expand_cidr,
+    parse_oui_file,
+    tcp_scan_async,
+    RUST_AVAILABLE
+)
+
+# Check if Rust backend is available
+print(f"Rust backend: {RUST_AVAILABLE}")
+
+# Normalize MAC addresses (10-100x faster with Rust)
+mac = normalize_mac("00:11:22:33:44:55")
+print(mac)  # "00:11:22:33:44:55"
+
+# Batch normalize (massively faster with Rust)
+macs = ["001122334455", "AA-BB-CC-DD-EE-FF", "11:22:33:44:55:66"]
+normalized = normalize_mac_batch(macs)
+
+# Expand CIDR to IP list
+ips = expand_cidr("192.168.1.0/24")
+print(f"Generated {len(ips)} IPs")  # 254 IPs
+
+# Parse OUI file (memory-mapped, very fast)
+oui_dict = parse_oui_file("/path/to/oui.txt")
+
+# Async TCP port scan
+open_ports = tcp_scan_async("192.168.1.1", [22, 80, 443, 8080])
+print(f"Open ports: {open_ports}")</code></pre>
+                    </div>
+
+                    <h3>Performance Comparison</h3>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>Operation</th>
+                                <th>Python</th>
+                                <th>Rust</th>
+                                <th>Speedup</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>normalize_mac (1000x)</td>
+                                <td>12ms</td>
+                                <td>0.15ms</td>
+                                <td>~80x</td>
+                            </tr>
+                            <tr>
+                                <td>expand_cidr (/16)</td>
+                                <td>850ms</td>
+                                <td>45ms</td>
+                                <td>~19x</td>
+                            </tr>
+                            <tr>
+                                <td>parse_oui (30MB)</td>
+                                <td>3.2s</td>
+                                <td>180ms</td>
+                                <td>~18x</td>
+                            </tr>
+                            <tr>
+                                <td>tcp_scan (100 ports)</td>
+                                <td>5.1s</td>
+                                <td>0.3s</td>
+                                <td>~17x</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- CLI Integration -->
+                <section id="cli-integration">
+                    <h2>CLI Integration</h2>
+                    <p>Run NetScan commands from Python:</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-python">import subprocess
+import json
+
+def netscan_command(args):
+    """Run netscan command and return JSON output."""
+    result = subprocess.run(
+        ["netscan"] + args + ["--json"],
+        capture_output=True,
+        text=True
+    )
+    return json.loads(result.stdout)
+
+# MAC lookup
+result = netscan_command(["-l", "00:50:56:C0:00:08"])
+print(result["vendor"])
+
+# Network scan
+devices = netscan_command(["-s"])
+for device in devices["devices"]:
+    print(f"{device['ip']}: {device['vendor']}")</code></pre>
+                    </div>
+                </section>
+
+                <!-- Examples -->
+                <section id="examples">
+                    <h2>Complete Examples</h2>
+
+                    <h3>Network Inventory Script</h3>
+                    <div class="code-block">
+                        <pre><code class="language-python">#!/usr/bin/env python3
+"""Generate network inventory report."""
+
+from helpers.scanner import NetworkScanner
+from helpers.mac_lookup import lookup_mac
+import json
+from datetime import datetime
+
+def generate_inventory(target=None):
+    """Scan network and generate inventory."""
+    scanner = NetworkScanner(target=target)
+    devices = scanner.full_scan()
+    
+    inventory = {
+        "timestamp": datetime.now().isoformat(),
+        "target": target or scanner.target,
+        "devices": []
+    }
+    
+    for device in devices:
+        # Enrich with vendor info
+        mac_info = lookup_mac(device["mac"])
+        device.update({
+            "vendor_full": mac_info.get("vendor", "Unknown"),
+            "is_private": mac_info.get("is_private", False)
+        })
+        inventory["devices"].append(device)
+    
+    inventory["summary"] = {
+        "total_devices": len(devices),
+        "vendors": list(set(d["vendor_full"] for d in devices))
+    }
+    
+    return inventory
+
+if __name__ == "__main__":
+    inventory = generate_inventory()
+    print(json.dumps(inventory, indent=2))
+    
+    # Save to file
+    with open(f"inventory_{datetime.now():%Y%m%d}.json", "w") as f:
+        json.dump(inventory, f, indent=2)</code></pre>
+                    </div>
+
+                    <h3>Device Monitor</h3>
+                    <div class="code-block">
+                        <pre><code class="language-python">#!/usr/bin/env python3
+"""Monitor network for new devices."""
+
+from helpers.scanner import NetworkScanner
+import time
+
+def monitor_network(interval=60):
+    """Continuously monitor network for changes."""
+    scanner = NetworkScanner()
+    known_devices = set()
+    
+    print(f"Monitoring {scanner.target}...")
+    print("Press Ctrl+C to stop\n")
+    
+    while True:
+        try:
+            devices = scanner.quick_scan()
+            current_macs = {d["mac"] for d in devices}
+            
+            # Check for new devices
+            new_macs = current_macs - known_devices
+            for mac in new_macs:
+                device = next(d for d in devices if d["mac"] == mac)
+                print(f"[NEW] {device['ip']} - {device['mac']} ({device['vendor']})")
+            
+            # Check for devices that went offline
+            offline_macs = known_devices - current_macs
+            for mac in offline_macs:
+                print(f"[OFFLINE] {mac}")
+            
+            known_devices = current_macs
+            time.sleep(interval)
+            
+        except KeyboardInterrupt:
+            print("\nMonitoring stopped.")
+            break
+
+if __name__ == "__main__":
+    monitor_network()</code></pre>
+                    </div>
+
+                    <h3>Vendor Statistics</h3>
+                    <div class="code-block">
+                        <pre><code class="language-python">#!/usr/bin/env python3
+"""Analyze vendor distribution on network."""
+
+from helpers.scanner import NetworkScanner
+from collections import Counter
+
+def vendor_stats():
+    """Get vendor statistics for network."""
+    scanner = NetworkScanner()
+    devices = scanner.quick_scan()
+    
+    vendors = Counter(d["vendor"] for d in devices)
+    
+    print(f"Network: {scanner.target}")
+    print(f"Total devices: {len(devices)}\n")
+    print("Vendor Distribution:")
+    print("-" * 40)
+    
+    for vendor, count in vendors.most_common():
+        pct = (count / len(devices)) * 100
+        bar = "█" * int(pct / 5)
+        print(f"{vendor[:25]:25} {count:3} ({pct:5.1f}%) {bar}")
+
+if __name__ == "__main__":
+    vendor_stats()</code></pre>
+                    </div>
+                </section>
+            </article>
+
+            <!-- Footer -->
+            <footer class="doc-footer">
+                <div class="footer-nav">
+                    <div class="footer-prev">
+                        <a href="configuration.html">
+                            <span>Previous</span>
+                            <strong>← Configuration</strong>
+                        </a>
+                    </div>
+                    <div class="footer-next">
+                        <a href="performance.html">
+                            <span>Next</span>
+                            <strong>Performance →</strong>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-meta">
+                    <p>© 2024-2026 NetScan. Released under the MIT License.</p>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Table of Contents -->
+        <aside class="toc">
+            <div class="toc-content">
+                <h4>On this page</h4>
+                <nav>
+                    <ul>
+                        <li><a href="#overview">Overview</a></li>
+                        <li><a href="#mac-lookup">MAC Lookup</a></li>
+                        <li><a href="#scanner">Network Scanner</a></li>
+                        <li><a href="#oui-database">OUI Database</a></li>
+                        <li><a href="#utilities">Utilities</a></li>
+                        <li><a href="#fast-core">Fast Core (Rust)</a></li>
+                        <li><a href="#cli-integration">CLI Integration</a></li>
+                        <li><a href="#examples">Examples</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/prism.js"></script>
+</body>
+</html>

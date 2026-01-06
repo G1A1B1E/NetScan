@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troubleshooting - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html" class="active">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>Troubleshooting</h1>
+            <p class="lead">Solutions for common issues with NetScan installation and usage.</p>
+
+            <h2>Command Not Found</h2>
+            <p><strong>Problem:</strong> <code>netscan: command not found</code></p>
+            <pre><code class="language-bash"># Check if installed
+ls -la /usr/local/bin/netscan
+ls -la ~/.local/bin/netscan
+
+# Add to PATH if using local install
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
+# Or reinstall
+curl -fsSL https://raw.githubusercontent.com/G1A1B1E/NetScan/main/install.sh | bash</code></pre>
+
+            <h2>Permission Denied</h2>
+            <p><strong>Problem:</strong> Scans fail or show incomplete results</p>
+            <pre><code class="language-bash"># Use sudo for ARP scanning
+sudo netscan -s
+
+# Or grant capabilities (Linux)
+sudo setcap cap_net_raw+ep $(which python3)</code></pre>
+
+            <h2>No Devices Found</h2>
+            <p><strong>Problem:</strong> Scan returns 0 devices</p>
+            <pre><code class="language-bash"># Check interface
+netscan --interfaces
+ip addr show
+
+# Specify correct interface
+netscan -s -i en0    # macOS
+netscan -s -i eth0   # Linux
+
+# Try with sudo
+sudo netscan -s
+
+# Check target network
+netscan -s -t 192.168.1.0/24 -v</code></pre>
+
+            <h2>Python Import Errors</h2>
+            <p><strong>Problem:</strong> <code>ModuleNotFoundError: No module named 'requests'</code></p>
+            <pre><code class="language-bash"># Install missing packages
+pip3 install --user requests netifaces
+
+# Or with system Python
+python3 -m pip install requests netifaces
+
+# Check Python version (need 3.7+)
+python3 --version</code></pre>
+
+            <h2>MAC Lookup Fails</h2>
+            <p><strong>Problem:</strong> <code>Unknown vendor</code> for valid MAC</p>
+            <pre><code class="language-bash"># Update OUI database
+netscan --update-oui
+
+# Check database exists
+ls -la ~/.netscan/data/oui.txt
+
+# Clear cache
+rm -rf ~/.netscan/cache/*</code></pre>
+
+            <h2>Web Interface Won't Start</h2>
+            <p><strong>Problem:</strong> <code>Address already in use</code></p>
+            <pre><code class="language-bash"># Check what's using the port
+lsof -i :8080
+
+# Use different port
+netscan -w -p 9000
+
+# Kill existing process
+kill $(lsof -t -i :8080)</code></pre>
+
+            <h2>Slow Scans</h2>
+            <p><strong>Problem:</strong> Scans take too long</p>
+            <pre><code class="language-bash"># Reduce timeout
+netscan -s --timeout 2
+
+# Use more threads
+netscan -s --threads 100
+
+# Install Rust module
+./build_rust.sh
+
+# Scan smaller range
+netscan -s -t 192.168.1.1-50</code></pre>
+
+            <h2>macOS: BSD vs GNU Tools</h2>
+            <p><strong>Problem:</strong> Commands behave differently</p>
+            <pre><code class="language-bash"># Install GNU tools
+brew install grep gnu-sed gawk coreutils
+
+# NetScan handles this automatically, but you can force:
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"</code></pre>
+
+            <h2>Docker Issues</h2>
+            <p><strong>Problem:</strong> Can't scan network from container</p>
+            <pre><code class="language-bash"># Need host networking and capabilities
+docker run --rm \
+  --network host \
+  --cap-add NET_RAW \
+  --cap-add NET_ADMIN \
+  netscan -s</code></pre>
+
+            <h2>Debug Mode</h2>
+            <p>Enable verbose logging to diagnose issues:</p>
+            <pre><code class="language-bash"># Verbose output
+netscan -s -v
+
+# Debug level
+NETSCAN_LOG_LEVEL=DEBUG netscan -s
+
+# Log to file
+netscan -s --log-file debug.log</code></pre>
+
+            <h2>Still Need Help?</h2>
+            <ul>
+                <li><a href="https://github.com/G1A1B1E/NetScan/issues">Open a GitHub Issue</a></li>
+                <li>Include: OS, Python version, error message, debug output</li>
+            </ul>
+
+            <footer class="doc-footer"><div class="footer-nav">
+                <div class="footer-prev"><a href="cli-reference.html"><span>Previous</span><strong>← CLI Reference</strong></a></div>
+                <div class="footer-next"><a href="changelog.html"><span>Next</span><strong>Changelog →</strong></a></div>
+            </div></footer>
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

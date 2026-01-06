@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Reference - NetScan Documentation</title>
+    <meta name="description" content="Complete command-line reference for all NetScan options and flags.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⌘</span>
+                <span class="logo-text">NetScan</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Docs</a>
+                <a href="installation.html">Installation</a>
+                <a href="usage.html">Usage</a>
+                <a href="api.html">API</a>
+                <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">
+                    <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    GitHub
+                </a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="search-box">
+                    <input type="text" placeholder="Search docs..." id="search-input">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <div class="nav-section">
+                        <h3>Getting Started</h3>
+                        <ul>
+                            <li><a href="index.html">Introduction</a></li>
+                            <li><a href="installation.html">Installation</a></li>
+                            <li><a href="quickstart.html">Quick Start</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Core Features</h3>
+                        <ul>
+                            <li><a href="usage.html">Basic Usage</a></li>
+                            <li><a href="mac-lookup.html">MAC Lookup</a></li>
+                            <li><a href="network-scanning.html">Network Scanning</a></li>
+                            <li><a href="monitoring.html">Monitoring</a></li>
+                            <li><a href="web-interface.html">Web Interface</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Advanced</h3>
+                        <ul>
+                            <li><a href="configuration.html">Configuration</a></li>
+                            <li><a href="api.html">Python API</a></li>
+                            <li><a href="performance.html">Performance</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Reference</h3>
+                        <ul>
+                            <li><a href="cli-reference.html" class="active">CLI Reference</a></li>
+                            <li><a href="troubleshooting.html">Troubleshooting</a></li>
+                            <li><a href="changelog.html">Changelog</a></li>
+                            <li><a href="contributing.html">Contributing</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <article class="doc-content">
+                <h1>CLI Reference</h1>
+                <p class="lead">Complete command-line reference for all NetScan options, flags, and arguments.</p>
+
+                <!-- Synopsis -->
+                <section id="synopsis">
+                    <h2>Synopsis</h2>
+                    <div class="code-block">
+                        <pre><code class="language-text">netscan [OPTIONS] [COMMAND]
+
+Commands:
+  (none)          Start interactive menu
+  -l, --lookup    MAC address lookup
+  -s, --scan      Quick network scan
+  -f, --full      Full scan with ports
+  -m, --monitor   Network monitoring
+  -w, --web       Start web interface
+  -b, --batch     Batch MAC lookup
+
+Options:
+  -t, --target    Target network/IP
+  -i, --interface Network interface
+  -o, --output    Output file
+  -p, --port      Web server port
+  --json          JSON output
+  --csv           CSV output
+  -v, --verbose   Verbose output
+  -q, --quiet     Quiet mode
+  -h, --help      Show help
+  --version       Show version</code></pre>
+                    </div>
+                </section>
+
+                <!-- Commands -->
+                <section id="commands">
+                    <h2>Commands</h2>
+
+                    <!-- Lookup -->
+                    <h3 id="lookup">-l, --lookup &lt;MAC&gt;</h3>
+                    <p>Look up vendor information for a MAC address.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Basic lookup
+netscan -l 00:50:56:C0:00:08
+netscan --lookup 00:50:56:C0:00:08
+
+# Different formats accepted
+netscan -l 00-50-56-C0-00-08
+netscan -l 005056C00008
+
+# JSON output
+netscan -l 00:50:56:C0:00:08 --json</code></pre>
+                    </div>
+
+                    <p><strong>Output:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-text">MAC Address: 00:50:56:C0:00:08
+Vendor: VMware, Inc.
+OUI: 00:50:56</code></pre>
+                    </div>
+
+                    <!-- Scan -->
+                    <h3 id="scan">-s, --scan</h3>
+                    <p>Perform a quick network scan using ARP and ping.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Auto-detect network
+netscan -s
+
+# Specific target
+netscan -s -t 192.168.1.0/24
+
+# Specific interface
+netscan -s -i en0
+
+# With JSON output
+netscan -s --json
+
+# Export to file
+netscan -s -o results.json</code></pre>
+                    </div>
+
+                    <!-- Full Scan -->
+                    <h3 id="full">-f, --full</h3>
+                    <p>Perform a full network scan including port detection.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Full scan (all common ports)
+netscan -f
+
+# Full scan with specific target
+netscan -f -t 10.0.0.0/24
+
+# Export detailed report
+netscan -f --report scan_report.html</code></pre>
+                    </div>
+
+                    <!-- Monitor -->
+                    <h3 id="monitor">-m, --monitor</h3>
+                    <p>Start continuous network monitoring.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Start monitoring
+netscan -m
+
+# With desktop notifications
+netscan -m --notify
+
+# Custom scan interval (seconds)
+netscan -m --interval 30
+
+# Log to file
+netscan -m --log monitor.log</code></pre>
+                    </div>
+
+                    <!-- Web -->
+                    <h3 id="web">-w, --web</h3>
+                    <p>Start the web interface.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Default port 8080
+netscan -w
+
+# Custom port
+netscan -w -p 9000
+netscan --web --port 9000
+
+# Bind to specific address
+netscan -w --bind 0.0.0.0</code></pre>
+                    </div>
+
+                    <!-- Batch -->
+                    <h3 id="batch">-b, --batch &lt;FILE&gt;</h3>
+                    <p>Batch lookup of MAC addresses from a file.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Lookup from file (one MAC per line)
+netscan -b macs.txt
+
+# With output file
+netscan -b macs.txt -o results.json</code></pre>
+                    </div>
+
+                    <p><strong>Input file format:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-text">00:50:56:C0:00:08
+AC:DE:48:00:11:22
+B8:27:EB:12:34:56</code></pre>
+                    </div>
+                </section>
+
+                <!-- Options -->
+                <section id="options">
+                    <h2>Options</h2>
+
+                    <h3 id="target">-t, --target &lt;TARGET&gt;</h3>
+                    <p>Specify the target network or IP address.</p>
+
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>Format</th>
+                                <th>Example</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CIDR</td>
+                                <td><code>192.168.1.0/24</code></td>
+                                <td>Subnet in CIDR notation</td>
+                            </tr>
+                            <tr>
+                                <td>Range</td>
+                                <td><code>192.168.1.1-50</code></td>
+                                <td>IP range</td>
+                            </tr>
+                            <tr>
+                                <td>Single IP</td>
+                                <td><code>192.168.1.100</code></td>
+                                <td>Single host</td>
+                            </tr>
+                            <tr>
+                                <td>Hostname</td>
+                                <td><code>router.local</code></td>
+                                <td>Hostname (resolved)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3 id="interface">-i, --interface &lt;IFACE&gt;</h3>
+                    <p>Specify the network interface to use.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># macOS
+netscan -s -i en0
+
+# Linux
+netscan -s -i eth0
+netscan -s -i wlan0</code></pre>
+                    </div>
+
+                    <h3 id="output">-o, --output &lt;FILE&gt;</h3>
+                    <p>Save output to a file. Format is auto-detected from extension.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -s -o results.json    # JSON format
+netscan -s -o results.csv     # CSV format
+netscan -s -o results.xml     # XML format
+netscan -s -o results.txt     # Plain text</code></pre>
+                    </div>
+
+                    <h3 id="port">-p, --port &lt;PORT&gt;</h3>
+                    <p>Specify port for web interface (default: 8080).</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -w -p 3000</code></pre>
+                    </div>
+
+                    <h3 id="json">--json</h3>
+                    <p>Output results in JSON format.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -s --json | jq '.devices[]'</code></pre>
+                    </div>
+
+                    <h3 id="csv">--csv</h3>
+                    <p>Output results in CSV format.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -s --csv > devices.csv</code></pre>
+                    </div>
+
+                    <h3 id="verbose">-v, --verbose</h3>
+                    <p>Enable verbose output with detailed progress.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -s -v</code></pre>
+                    </div>
+
+                    <h3 id="quiet">-q, --quiet</h3>
+                    <p>Suppress all output except results.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -s -q</code></pre>
+                    </div>
+
+                    <h3 id="help">-h, --help</h3>
+                    <p>Show help message and exit.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan --help
+netscan -s --help   # Help for scan command</code></pre>
+                    </div>
+
+                    <h3 id="version">--version</h3>
+                    <p>Show version information.</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan --version</code></pre>
+                    </div>
+                </section>
+
+                <!-- Advanced Options -->
+                <section id="advanced-options">
+                    <h2>Advanced Options</h2>
+
+                    <h3>--timeout &lt;SECONDS&gt;</h3>
+                    <p>Set network timeout (default: 5 seconds).</p>
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -s --timeout 10</code></pre>
+                    </div>
+
+                    <h3>--threads &lt;NUM&gt;</h3>
+                    <p>Number of concurrent scan threads (default: auto).</p>
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -s --threads 50</code></pre>
+                    </div>
+
+                    <h3>--ports &lt;PORTS&gt;</h3>
+                    <p>Specify ports for full scan.</p>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Specific ports
+netscan -f --ports 22,80,443,8080
+
+# Port range
+netscan -f --ports 1-1000
+
+# Common ports (default)
+netscan -f --ports common</code></pre>
+                    </div>
+
+                    <h3>--report &lt;FILE&gt;</h3>
+                    <p>Generate HTML report.</p>
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -f --report network_audit.html</code></pre>
+                    </div>
+
+                    <h3>--update-oui</h3>
+                    <p>Download and update OUI database.</p>
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan --update-oui</code></pre>
+                    </div>
+
+                    <h3>--vendor &lt;NAME&gt;</h3>
+                    <p>Search for devices by vendor name.</p>
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan --vendor Apple
+netscan --vendor "Raspberry Pi"</code></pre>
+                    </div>
+
+                    <h3>--no-cache</h3>
+                    <p>Disable lookup cache.</p>
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan -l 00:50:56:C0:00:08 --no-cache</code></pre>
+                    </div>
+                </section>
+
+                <!-- Environment Variables -->
+                <section id="environment">
+                    <h2>Environment Variables</h2>
+
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>NETSCAN_HOME</code></td>
+                                <td>~/.netscan</td>
+                                <td>NetScan home directory</td>
+                            </tr>
+                            <tr>
+                                <td><code>NETSCAN_LOG_LEVEL</code></td>
+                                <td>INFO</td>
+                                <td>Log level (DEBUG, INFO, WARN, ERROR)</td>
+                            </tr>
+                            <tr>
+                                <td><code>NETSCAN_CACHE_TTL</code></td>
+                                <td>3600</td>
+                                <td>Cache TTL in seconds</td>
+                            </tr>
+                            <tr>
+                                <td><code>NETSCAN_TIMEOUT</code></td>
+                                <td>5</td>
+                                <td>Default network timeout</td>
+                            </tr>
+                            <tr>
+                                <td><code>NETSCAN_THREADS</code></td>
+                                <td>auto</td>
+                                <td>Number of scan threads</td>
+                            </tr>
+                            <tr>
+                                <td><code>NETSCAN_OUI_URL</code></td>
+                                <td>(IEEE)</td>
+                                <td>Custom OUI database URL</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Set environment variable
+export NETSCAN_LOG_LEVEL=DEBUG
+netscan -s
+
+# Or inline
+NETSCAN_TIMEOUT=10 netscan -s</code></pre>
+                    </div>
+                </section>
+
+                <!-- Exit Codes -->
+                <section id="exit-codes">
+                    <h2>Exit Codes</h2>
+
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>Success</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>General error</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Invalid arguments</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Network error</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Permission denied</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>File not found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Check exit code
+netscan -l 00:50:56:C0:00:08
+echo $?  # 0 = success</code></pre>
+                    </div>
+                </section>
+
+                <!-- Examples -->
+                <section id="examples">
+                    <h2>Examples</h2>
+
+                    <h3>MAC Lookup</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Single lookup
+netscan -l 00:50:56:C0:00:08
+
+# Batch lookup
+netscan -b mac_list.txt -o results.json
+
+# Search by vendor
+netscan --vendor Apple</code></pre>
+                    </div>
+
+                    <h3>Network Scanning</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Quick scan local network
+netscan -s
+
+# Full scan specific subnet
+netscan -f -t 10.0.0.0/24
+
+# Scan and export
+netscan -s -o scan_$(date +%Y%m%d).json
+
+# Scan specific ports
+netscan -f --ports 22,80,443,3389 -t 192.168.1.0/24</code></pre>
+                    </div>
+
+                    <h3>Monitoring</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Monitor with notifications
+netscan -m --notify
+
+# Log new devices
+netscan -m --log /var/log/netscan.log
+
+# Fast polling (every 15 seconds)
+netscan -m --interval 15</code></pre>
+                    </div>
+
+                    <h3>Scripting</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># JSON pipeline
+netscan -s --json | jq '.devices[] | select(.vendor | contains("Apple"))'
+
+# Count devices
+netscan -s --json | jq '.devices | length'
+
+# Get just IPs
+netscan -s --json | jq -r '.devices[].ip'
+
+# CSV for spreadsheet
+netscan -s --csv > network_inventory.csv</code></pre>
+                    </div>
+                </section>
+            </article>
+
+            <!-- Footer -->
+            <footer class="doc-footer">
+                <div class="footer-nav">
+                    <div class="footer-prev">
+                        <a href="docker.html">
+                            <span>Previous</span>
+                            <strong>← Docker</strong>
+                        </a>
+                    </div>
+                    <div class="footer-next">
+                        <a href="troubleshooting.html">
+                            <span>Next</span>
+                            <strong>Troubleshooting →</strong>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-meta">
+                    <p>© 2024-2026 NetScan. Released under the MIT License.</p>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Table of Contents -->
+        <aside class="toc">
+            <div class="toc-content">
+                <h4>On this page</h4>
+                <nav>
+                    <ul>
+                        <li><a href="#synopsis">Synopsis</a></li>
+                        <li><a href="#commands">Commands</a></li>
+                        <li><a href="#options">Options</a></li>
+                        <li><a href="#advanced-options">Advanced Options</a></li>
+                        <li><a href="#environment">Environment</a></li>
+                        <li><a href="#exit-codes">Exit Codes</a></li>
+                        <li><a href="#examples">Examples</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/prism.js"></script>
+</body>
+</html>

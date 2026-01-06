@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html" class="active">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>Performance Optimization</h1>
+            <p class="lead">Achieve 10-100x faster performance with the optional Rust module for large-scale network scanning.</p>
+
+            <h2>Rust Performance Module</h2>
+            <p>NetScan includes an optional Rust backend for CPU-intensive operations:</p>
+            <table class="doc-table">
+                <tr><th>Operation</th><th>Python</th><th>Rust</th><th>Speedup</th></tr>
+                <tr><td>MAC normalize (1000x)</td><td>12ms</td><td>0.15ms</td><td>~80x</td></tr>
+                <tr><td>CIDR expand (/16)</td><td>850ms</td><td>45ms</td><td>~19x</td></tr>
+                <tr><td>OUI parse (30MB)</td><td>3.2s</td><td>180ms</td><td>~18x</td></tr>
+                <tr><td>TCP scan (100 ports)</td><td>5.1s</td><td>0.3s</td><td>~17x</td></tr>
+            </table>
+
+            <h2>Install Rust Module</h2>
+            <pre><code class="language-bash"># 1. Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.cargo/env
+
+# 2. Install maturin
+pip3 install maturin
+
+# 3. Build module
+cd ~/.netscan
+./build_rust.sh</code></pre>
+
+            <h2>Verify Installation</h2>
+            <pre><code class="language-bash">python3 ~/.netscan/helpers/fast_core.py</code></pre>
+            <pre><code class="language-text">✓ Using Rust backend (10-100x faster)
+  - normalize_mac: OK
+  - expand_cidr: OK
+  - parse_oui_file: OK
+  - tcp_scan_async: OK</code></pre>
+
+            <h2>Auto-Fallback</h2>
+            <p>The <code>fast_core.py</code> wrapper automatically uses Rust if available, otherwise falls back to Python:</p>
+            <pre><code class="language-python">from helpers.fast_core import normalize_mac, RUST_AVAILABLE
+
+print(f"Using Rust: {RUST_AVAILABLE}")
+mac = normalize_mac("001122334455")  # Works either way</code></pre>
+
+            <h2>Performance Tips</h2>
+
+            <h3>Increase Threads</h3>
+            <pre><code class="language-bash"># More concurrent connections
+netscan -s --threads 100
+
+# For large networks
+netscan -s --threads 200 -t 10.0.0.0/16</code></pre>
+
+            <h3>Adjust Timeouts</h3>
+            <pre><code class="language-bash"># Shorter timeout for fast networks
+netscan -s --timeout 2
+
+# Longer for slow/remote networks
+netscan -s --timeout 10</code></pre>
+
+            <h3>Use ARP Scan</h3>
+            <pre><code class="language-bash"># ARP is faster than ping (requires sudo)
+sudo netscan -s</code></pre>
+
+            <h3>Limit Port Range</h3>
+            <pre><code class="language-bash"># Only common ports (faster)
+netscan -f --ports 22,80,443
+
+# vs all ports (slow)
+netscan -f --ports 1-65535</code></pre>
+
+            <h2>Benchmarking</h2>
+            <pre><code class="language-bash"># Time a scan
+time netscan -s -t 192.168.1.0/24
+
+# Compare with/without Rust
+NETSCAN_NO_RUST=1 time netscan -s  # Force Python
+time netscan -s                     # Use Rust if available</code></pre>
+
+            <h2>Memory Usage</h2>
+            <p>For very large networks (/8), consider:</p>
+            <pre><code class="language-bash"># Stream results instead of buffering
+netscan -s -t 10.0.0.0/8 --stream
+
+# Or scan in chunks
+for i in $(seq 0 255); do
+  netscan -s -t "10.$i.0.0/16" -o "scan_10_$i.json"
+done</code></pre>
+
+            <footer class="doc-footer"><div class="footer-nav">
+                <div class="footer-prev"><a href="api.html"><span>Previous</span><strong>← Python API</strong></a></div>
+                <div class="footer-next"><a href="docker.html"><span>Next</span><strong>Docker →</strong></a></div>
+            </div></footer>
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

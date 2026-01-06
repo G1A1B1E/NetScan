@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Interface - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html" class="active">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>Web Interface</h1>
+            <p class="lead">Access NetScan through a modern browser-based interface for scanning, lookups, and monitoring.</p>
+
+            <h2>Start Web Server</h2>
+            <pre><code class="language-bash"># Default port 8080
+netscan -w
+
+# Custom port
+netscan -w -p 3000
+
+# Bind to all interfaces (network access)
+netscan -w --bind 0.0.0.0</code></pre>
+            <p>Then open <a href="http://localhost:8080">http://localhost:8080</a> in your browser.</p>
+
+            <h2>Features</h2>
+            <ul>
+                <li><strong>MAC Lookup</strong> — Enter any MAC address for instant vendor lookup</li>
+                <li><strong>Network Scanner</strong> — One-click scan with visual results</li>
+                <li><strong>Device List</strong> — Sortable, searchable device table</li>
+                <li><strong>Scan History</strong> — View and compare previous scans</li>
+                <li><strong>Export</strong> — Download results as JSON/CSV</li>
+                <li><strong>Real-time Updates</strong> — Live scan progress</li>
+            </ul>
+
+            <h2>REST API</h2>
+            <p>The web interface exposes a REST API:</p>
+            <pre><code class="language-bash"># MAC lookup
+curl http://localhost:8080/api/lookup/00:50:56:C0:00:08
+
+# Start scan
+curl -X POST http://localhost:8080/api/scan
+
+# Get devices
+curl http://localhost:8080/api/devices
+
+# Server status
+curl http://localhost:8080/api/status</code></pre>
+
+            <h2>API Responses</h2>
+            <pre><code class="language-json">// GET /api/lookup/00:50:56:C0:00:08
+{
+  "mac": "00:50:56:C0:00:08",
+  "vendor": "VMware, Inc.",
+  "oui": "00:50:56"
+}
+
+// GET /api/devices
+{
+  "devices": [
+    {"ip": "192.168.1.1", "mac": "00:11:22:AA:BB:CC", "vendor": "Netgear"},
+    {"ip": "192.168.1.10", "mac": "AC:DE:48:00:11:22", "vendor": "Apple, Inc."}
+  ],
+  "count": 2,
+  "last_scan": "2024-01-15T14:30:00Z"
+}</code></pre>
+
+            <h2>Docker</h2>
+            <pre><code class="language-bash"># Run web interface in Docker
+docker run -d -p 8080:8080 --network host --cap-add NET_RAW netscan -w
+
+# Or with docker-compose
+docker compose --profile web up -d</code></pre>
+
+            <h2>Security</h2>
+            <div class="warning-box info-box">
+                <strong>⚠️ Warning:</strong> The web interface has no authentication by default. Only expose on trusted networks or add a reverse proxy with authentication.
+            </div>
+            <pre><code class="language-bash"># Only bind to localhost (default, safe)
+netscan -w
+
+# Expose to network (use with caution)
+netscan -w --bind 0.0.0.0</code></pre>
+
+            <footer class="doc-footer"><div class="footer-nav">
+                <div class="footer-prev"><a href="monitoring.html"><span>Previous</span><strong>← Monitoring</strong></a></div>
+                <div class="footer-next"><a href="configuration.html"><span>Next</span><strong>Configuration →</strong></a></div>
+            </div></footer>
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

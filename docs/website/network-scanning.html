@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Scanning - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html" class="active">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>Network Scanning</h1>
+            <p class="lead">Discover all devices on your network with IP, MAC, hostname, and vendor information.</p>
+
+            <h2>Quick Scan</h2>
+            <p>Fast discovery using ARP and ping:</p>
+            <pre><code class="language-bash">netscan -s</code></pre>
+            <pre><code class="language-text">Scanning 192.168.1.0/24...
+
+IP Address      MAC Address         Hostname        Vendor
+────────────────────────────────────────────────────────────────
+192.168.1.1     00:11:22:AA:BB:CC   router.local    Netgear
+192.168.1.10    AC:DE:48:00:11:22   macbook.local   Apple, Inc.
+192.168.1.15    B8:27:EB:12:34:56   raspberrypi     Raspberry Pi
+
+Found 3 devices in 8.2 seconds</code></pre>
+
+            <h2>Full Scan with Ports</h2>
+            <p>Deep scan including open port detection:</p>
+            <pre><code class="language-bash">netscan -f</code></pre>
+            <pre><code class="language-text">IP Address      MAC Address         Vendor          Open Ports
+────────────────────────────────────────────────────────────────
+192.168.1.1     00:11:22:AA:BB:CC   Netgear         80, 443
+192.168.1.10    AC:DE:48:00:11:22   Apple, Inc.     22, 5900
+192.168.1.15    B8:27:EB:12:34:56   Raspberry Pi    22, 80, 8080</code></pre>
+
+            <h2>Scan Options</h2>
+            <pre><code class="language-bash"># Specific subnet
+netscan -s -t 10.0.0.0/24
+
+# IP range
+netscan -s -t 192.168.1.1-50
+
+# Specific interface
+netscan -s -i en0
+
+# Custom ports
+netscan -f --ports 22,80,443,3389,8080
+
+# More threads for faster scanning
+netscan -s --threads 100</code></pre>
+
+            <h2>Export Results</h2>
+            <pre><code class="language-bash"># JSON
+netscan -s -o scan.json
+netscan -s --json > scan.json
+
+# CSV
+netscan -s --csv > scan.csv
+
+# HTML Report
+netscan -f --report network_audit.html</code></pre>
+
+            <h2>Scan Types</h2>
+            <table class="doc-table">
+                <tr><th>Method</th><th>Flag</th><th>Speed</th><th>Privileges</th></tr>
+                <tr><td>ARP Scan</td><td><code>-s</code></td><td>Fast</td><td>sudo recommended</td></tr>
+                <tr><td>Ping Sweep</td><td><code>-s</code></td><td>Medium</td><td>None</td></tr>
+                <tr><td>Port Scan</td><td><code>-f</code></td><td>Slow</td><td>None</td></tr>
+            </table>
+
+            <h2>Python API</h2>
+            <pre><code class="language-python">from helpers.scanner import NetworkScanner
+
+scanner = NetworkScanner(target="192.168.1.0/24")
+
+# Quick scan
+devices = scanner.quick_scan()
+for d in devices:
+    print(f"{d['ip']} - {d['vendor']}")
+
+# Full scan with ports
+devices = scanner.full_scan(ports=[22, 80, 443])</code></pre>
+
+            <div class="info-box">
+                <strong>💡 Tip:</strong> Use <code>sudo netscan -s</code> for best results. ARP scanning requires elevated privileges to see all devices.
+            </div>
+
+            <footer class="doc-footer"><div class="footer-nav">
+                <div class="footer-prev"><a href="mac-lookup.html"><span>Previous</span><strong>← MAC Lookup</strong></a></div>
+                <div class="footer-next"><a href="monitoring.html"><span>Next</span><strong>Monitoring →</strong></a></div>
+            </div></footer>
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

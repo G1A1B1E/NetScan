@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contributing - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html" class="active">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>Contributing</h1>
+            <p class="lead">Help improve NetScan! We welcome contributions of all kinds.</p>
+
+            <h2>Ways to Contribute</h2>
+            <ul>
+                <li>🐛 <strong>Report bugs</strong> — Open an issue with details</li>
+                <li>💡 <strong>Suggest features</strong> — Share your ideas</li>
+                <li>📖 <strong>Improve docs</strong> — Fix typos, add examples</li>
+                <li>🔧 <strong>Submit code</strong> — Bug fixes, new features</li>
+                <li>🧪 <strong>Test</strong> — Test on different platforms</li>
+            </ul>
+
+            <h2>Development Setup</h2>
+            <pre><code class="language-bash"># Clone repo
+git clone https://github.com/G1A1B1E/NetScan.git
+cd NetScan
+
+# Create branch
+git checkout -b feature/my-feature
+
+# Install dev dependencies
+pip3 install -r requirements-dev.txt
+
+# Run tests
+python3 -m pytest tests/</code></pre>
+
+            <h2>Code Style</h2>
+            <ul>
+                <li><strong>Python:</strong> PEP 8, type hints encouraged</li>
+                <li><strong>Bash:</strong> ShellCheck clean</li>
+                <li><strong>Rust:</strong> <code>cargo fmt</code> and <code>cargo clippy</code></li>
+            </ul>
+            <pre><code class="language-bash"># Format Python
+black helpers/
+isort helpers/
+
+# Check Bash
+shellcheck lib/*.sh
+
+# Format Rust
+cd rust_helpers && cargo fmt</code></pre>
+
+            <h2>Pull Request Process</h2>
+            <ol>
+                <li>Fork the repository</li>
+                <li>Create feature branch (<code>git checkout -b feature/xyz</code>)</li>
+                <li>Make your changes</li>
+                <li>Run tests (<code>python3 -m pytest</code>)</li>
+                <li>Commit (<code>git commit -m 'Add xyz feature'</code>)</li>
+                <li>Push (<code>git push origin feature/xyz</code>)</li>
+                <li>Open Pull Request</li>
+            </ol>
+
+            <h2>Project Structure</h2>
+            <pre><code class="language-text">NetScan/
+├── netscan              # Main entry point
+├── lib/                 # Bash libraries
+│   ├── scanner.sh
+│   ├── mac_lookup.sh
+│   └── utils.sh
+├── helpers/             # Python modules
+│   ├── mac_lookup.py
+│   ├── scanner.py
+│   ├── oui_parser.py
+│   └── fast_core.py
+├── rust_helpers/        # Optional Rust module
+│   ├── Cargo.toml
+│   └── src/
+├── docs/                # Documentation
+└── tests/               # Test suite</code></pre>
+
+            <h2>Testing</h2>
+            <pre><code class="language-bash"># Run all tests
+python3 -m pytest
+
+# Run specific test
+python3 -m pytest tests/test_mac_lookup.py
+
+# With coverage
+python3 -m pytest --cov=helpers</code></pre>
+
+            <h2>Reporting Issues</h2>
+            <p>Include:</p>
+            <ul>
+                <li>Operating system and version</li>
+                <li>Python version (<code>python3 --version</code>)</li>
+                <li>NetScan version (<code>netscan --version</code>)</li>
+                <li>Full error message</li>
+                <li>Steps to reproduce</li>
+            </ul>
+
+            <h2>License</h2>
+            <p>By contributing, you agree that your contributions will be licensed under the MIT License.</p>
+
+            <h2>Code of Conduct</h2>
+            <p>Be respectful, inclusive, and constructive. See <a href="https://github.com/G1A1B1E/NetScan/blob/main/CODE_OF_CONDUCT.md">CODE_OF_CONDUCT.md</a></p>
+
+            <footer class="doc-footer"><div class="footer-nav">
+                <div class="footer-prev"><a href="changelog.html"><span>Previous</span><strong>← Changelog</strong></a></div>
+                <div class="footer-next"><a href="index.html"><span>Back to</span><strong>Introduction →</strong></a></div>
+            </div></footer>
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetScan Documentation</title>
+    <meta name="description" content="NetScan - Network Scanner & MAC Vendor Lookup Tool. Comprehensive documentation and installation guide.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⌘</span>
+                <span class="logo-text">NetScan</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="active">Docs</a>
+                <a href="installation.html">Installation</a>
+                <a href="usage.html">Usage</a>
+                <a href="api.html">API</a>
+                <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">
+                    <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    GitHub
+                </a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="search-box">
+                    <input type="text" placeholder="Search docs..." id="search-input">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <div class="nav-section">
+                        <h3>Getting Started</h3>
+                        <ul>
+                            <li><a href="index.html" class="active">Introduction</a></li>
+                            <li><a href="installation.html">Installation</a></li>
+                            <li><a href="quickstart.html">Quick Start</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Core Features</h3>
+                        <ul>
+                            <li><a href="usage.html">Basic Usage</a></li>
+                            <li><a href="mac-lookup.html">MAC Lookup</a></li>
+                            <li><a href="network-scanning.html">Network Scanning</a></li>
+                            <li><a href="monitoring.html">Monitoring</a></li>
+                            <li><a href="web-interface.html">Web Interface</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Advanced</h3>
+                        <ul>
+                            <li><a href="configuration.html">Configuration</a></li>
+                            <li><a href="api.html">Python API</a></li>
+                            <li><a href="performance.html">Performance</a></li>
+                            <li><a href="docker.html">Docker</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Reference</h3>
+                        <ul>
+                            <li><a href="cli-reference.html">CLI Reference</a></li>
+                            <li><a href="troubleshooting.html">Troubleshooting</a></li>
+                            <li><a href="changelog.html">Changelog</a></li>
+                            <li><a href="contributing.html">Contributing</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <article class="doc-content">
+                <!-- Hero Section -->
+                <div class="hero">
+                    <h1>NetScan Documentation</h1>
+                    <p class="lead">A powerful network scanner and MAC vendor lookup tool for network administrators and security professionals.</p>
+                    
+                    <div class="hero-buttons">
+                        <a href="installation.html" class="btn btn-primary">Get Started</a>
+                        <a href="https://github.com/G1A1B1E/NetScan" class="btn btn-secondary">View on GitHub</a>
+                    </div>
+                </div>
+
+                <!-- Feature Cards -->
+                <section class="features">
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🔍</div>
+                            <h3>MAC Vendor Lookup</h3>
+                            <p>Instantly identify device manufacturers from MAC addresses with local caching for speed.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📡</div>
+                            <h3>Network Scanning</h3>
+                            <p>Discover all devices on your network using multiple scan methods (ARP, ping, TCP).</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">👁️</div>
+                            <h3>Real-time Monitoring</h3>
+                            <p>Track devices joining and leaving your network with alerts and history.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🌐</div>
+                            <h3>Web Interface</h3>
+                            <p>Modern web dashboard for visual network management and reporting.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h3>Reports & Export</h3>
+                            <p>Generate PDF, HTML, and Markdown reports. Export to JSON, CSV, XML.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🚀</div>
+                            <h3>High Performance</h3>
+                            <p>Optional Rust module for 10-100x faster processing on large networks.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Install -->
+                <section class="quick-install">
+                    <h2>Quick Installation</h2>
+                    <p>Install NetScan with a single command:</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>bash</span>
+                            <button class="copy-btn" data-clipboard-target="#install-cmd">Copy</button>
+                        </div>
+                        <pre><code id="install-cmd" class="language-bash">curl -fsSL https://raw.githubusercontent.com/G1A1B1E/NetScan/main/install.sh | bash</code></pre>
+                    </div>
+
+                    <p>Or install for current user only (no sudo required):</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-bash">bash &lt;(curl -fsSL https://raw.githubusercontent.com/G1A1B1E/NetScan/main/install.sh) --local</code></pre>
+                    </div>
+
+                    <div class="info-box">
+                        <strong>📦 What gets installed:</strong>
+                        <ul>
+                            <li>NetScan command-line tool</li>
+                            <li>Python helper scripts</li>
+                            <li>Required dependencies (via Homebrew/apt)</li>
+                            <li>OUI vendor database</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Quick Start -->
+                <section class="quick-start">
+                    <h2>Quick Start</h2>
+                    
+                    <h3>Interactive Mode</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash">netscan</code></pre>
+                    </div>
+                    <p>Launch the interactive menu for guided operation.</p>
+
+                    <h3>MAC Vendor Lookup</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Single MAC address
+netscan -l 00:11:22:33:44:55
+
+# Multiple addresses
+netscan -l "00:11:22:33:44:55 AA:BB:CC:DD:EE:FF"
+
+# From file
+netscan -f mac_addresses.txt</code></pre>
+                    </div>
+
+                    <h3>Network Scanning</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Scan local network
+netscan -s
+
+# Scan specific subnet
+netscan -s 192.168.1.0/24
+
+# Quick scan (ping only)
+netscan -s --quick</code></pre>
+                    </div>
+
+                    <h3>Web Interface</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Start web server
+netscan -w
+
+# Custom port
+netscan -w --port 9000</code></pre>
+                    </div>
+                </section>
+
+                <!-- System Requirements -->
+                <section class="requirements">
+                    <h2>System Requirements</h2>
+                    
+                    <div class="requirements-grid">
+                        <div class="requirement-card">
+                            <h4>Operating System</h4>
+                            <ul>
+                                <li>macOS 10.15+</li>
+                                <li>Linux (Ubuntu 18.04+, Debian 10+, Fedora, Arch)</li>
+                                <li>Windows via WSL2</li>
+                            </ul>
+                        </div>
+                        <div class="requirement-card">
+                            <h4>Required</h4>
+                            <ul>
+                                <li>Bash 4.0+</li>
+                                <li>Python 3.7+</li>
+                                <li>Network access</li>
+                            </ul>
+                        </div>
+                        <div class="requirement-card">
+                            <h4>Optional</h4>
+                            <ul>
+                                <li>nmap (enhanced scanning)</li>
+                                <li>arp-scan (ARP discovery)</li>
+                                <li>Rust (performance module)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Next Steps -->
+                <section class="next-steps">
+                    <h2>Next Steps</h2>
+                    <div class="next-steps-grid">
+                        <a href="installation.html" class="next-step-card">
+                            <h4>📥 Installation Guide</h4>
+                            <p>Detailed installation instructions for all platforms</p>
+                        </a>
+                        <a href="quickstart.html" class="next-step-card">
+                            <h4>🚀 Quick Start Tutorial</h4>
+                            <p>Get up and running in 5 minutes</p>
+                        </a>
+                        <a href="cli-reference.html" class="next-step-card">
+                            <h4>📖 CLI Reference</h4>
+                            <p>Complete command-line documentation</p>
+                        </a>
+                        <a href="docker.html" class="next-step-card">
+                            <h4>🐳 Docker Setup</h4>
+                            <p>Run NetScan in containers</p>
+                        </a>
+                    </div>
+                </section>
+            </article>
+
+            <!-- Footer -->
+            <footer class="doc-footer">
+                <div class="footer-nav">
+                    <div class="footer-prev"></div>
+                    <div class="footer-next">
+                        <a href="installation.html">
+                            <span>Next</span>
+                            <strong>Installation →</strong>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-meta">
+                    <p>© 2024-2026 NetScan. Released under the MIT License.</p>
+                    <p>
+                        <a href="https://github.com/G1A1B1E/NetScan">GitHub</a> · 
+                        <a href="https://github.com/G1A1B1E/NetScan/issues">Report Issue</a> · 
+                        <a href="contributing.html">Contribute</a>
+                    </p>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Table of Contents -->
+        <aside class="toc">
+            <div class="toc-content">
+                <h4>On this page</h4>
+                <nav>
+                    <ul>
+                        <li><a href="#quick-installation">Quick Installation</a></li>
+                        <li><a href="#quick-start">Quick Start</a></li>
+                        <li><a href="#system-requirements">System Requirements</a></li>
+                        <li><a href="#next-steps">Next Steps</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/prism.js"></script>
+</body>
+</html>

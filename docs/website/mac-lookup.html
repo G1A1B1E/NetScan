@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAC Lookup - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html" class="active">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>MAC Address Lookup</h1>
+            <p class="lead">Identify device manufacturers by their MAC address using NetScan's OUI database.</p>
+
+            <h2>Quick Lookup</h2>
+            <pre><code class="language-bash">netscan -l 00:50:56:C0:00:08</code></pre>
+            <p>Output:</p>
+            <pre><code class="language-text">MAC Address: 00:50:56:C0:00:08
+Vendor: VMware, Inc.
+OUI: 00:50:56</code></pre>
+
+            <h2>Supported Formats</h2>
+            <p>All these formats work:</p>
+            <pre><code class="language-bash">netscan -l 00:50:56:C0:00:08   # Colons
+netscan -l 00-50-56-C0-00-08   # Dashes
+netscan -l 005056C00008        # No separators
+netscan -l 00:50:56            # OUI only (first 3 bytes)</code></pre>
+
+            <h2>Batch Lookup</h2>
+            <p>Look up multiple MACs from a file:</p>
+            <pre><code class="language-bash"># Create file with one MAC per line
+echo "00:50:56:C0:00:08
+AC:DE:48:00:11:22
+B8:27:EB:12:34:56" > macs.txt
+
+# Batch lookup
+netscan -b macs.txt -o results.json</code></pre>
+
+            <h2>Search by Vendor</h2>
+            <pre><code class="language-bash"># Find all Apple OUIs
+netscan --vendor Apple
+
+# Find Cisco entries
+netscan --vendor "Cisco Systems"</code></pre>
+
+            <h2>JSON Output</h2>
+            <pre><code class="language-bash">netscan -l 00:50:56:C0:00:08 --json</code></pre>
+            <pre><code class="language-json">{
+  "mac": "00:50:56:C0:00:08",
+  "vendor": "VMware, Inc.",
+  "oui": "00:50:56",
+  "is_private": false,
+  "is_multicast": false
+}</code></pre>
+
+            <h2>Update OUI Database</h2>
+            <pre><code class="language-bash">netscan --update-oui</code></pre>
+            <p>Downloads the latest IEEE OUI database for accurate lookups.</p>
+
+            <h2>Python API</h2>
+            <pre><code class="language-python">from helpers.mac_lookup import lookup_mac, lookup_vendor
+
+# Full lookup
+result = lookup_mac("00:50:56:C0:00:08")
+print(result['vendor'])  # VMware, Inc.
+
+# Quick vendor lookup
+vendor = lookup_vendor("AC:DE:48:00:11:22")
+print(vendor)  # Apple, Inc.</code></pre>
+
+            <footer class="doc-footer"><div class="footer-nav">
+                <div class="footer-prev"><a href="usage.html"><span>Previous</span><strong>← Basic Usage</strong></a></div>
+                <div class="footer-next"><a href="network-scanning.html"><span>Next</span><strong>Network Scanning →</strong></a></div>
+            </div></footer>
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

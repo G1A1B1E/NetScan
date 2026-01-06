@@ -1,0 +1,232 @@
+/* PrismJS 1.29.0 - Minimal Theme for Documentation */
+
+code[class*="language-"],
+pre[class*="language-"] {
+    color: #24292f;
+    background: none;
+    font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.875em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    tab-size: 4;
+    hyphens: none;
+}
+
+pre[class*="language-"] {
+    padding: 1em;
+    margin: 0;
+    overflow: auto;
+    background: #f6f8fa;
+}
+
+:not(pre) > code[class*="language-"] {
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    background: #f6f8fa;
+}
+
+/* Tokens */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #6a737d;
+}
+
+.token.punctuation {
+    color: #24292f;
+}
+
+.token.namespace {
+    opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: #005cc5;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #22863a;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+    color: #d73a49;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+    color: #d73a49;
+}
+
+.token.function,
+.token.class-name {
+    color: #6f42c1;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+    color: #e36209;
+}
+
+.token.important,
+.token.bold {
+    font-weight: bold;
+}
+
+.token.italic {
+    font-style: italic;
+}
+
+.token.entity {
+    cursor: help;
+}
+
+/* Line highlighting */
+.line-highlight {
+    background: rgba(0, 102, 204, 0.1);
+    border-left: 3px solid #0066cc;
+    margin-left: -1em;
+    padding-left: calc(1em - 3px);
+}
+
+/* Line numbers */
+pre[class*="language-"].line-numbers {
+    position: relative;
+    padding-left: 3.8em;
+    counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+    position: relative;
+    white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    font-size: 100%;
+    left: -3.8em;
+    width: 3em;
+    letter-spacing: -1px;
+    border-right: 1px solid #e1e4e8;
+    user-select: none;
+}
+
+.line-numbers-rows > span {
+    display: block;
+    counter-increment: linenumber;
+}
+
+.line-numbers-rows > span:before {
+    content: counter(linenumber);
+    color: #959da5;
+    display: block;
+    padding-right: 0.8em;
+    text-align: right;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    code[class*="language-"],
+    pre[class*="language-"] {
+        color: #e1e4e8;
+    }
+    
+    pre[class*="language-"] {
+        background: #161b22;
+    }
+    
+    :not(pre) > code[class*="language-"] {
+        background: #161b22;
+    }
+    
+    .token.comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+        color: #8b949e;
+    }
+    
+    .token.punctuation {
+        color: #e1e4e8;
+    }
+    
+    .token.property,
+    .token.tag,
+    .token.boolean,
+    .token.number,
+    .token.constant,
+    .token.symbol,
+    .token.deleted {
+        color: #79c0ff;
+    }
+    
+    .token.selector,
+    .token.attr-name,
+    .token.string,
+    .token.char,
+    .token.builtin,
+    .token.inserted {
+        color: #7ee787;
+    }
+    
+    .token.operator,
+    .token.entity,
+    .token.url,
+    .language-css .token.string,
+    .style .token.string {
+        color: #ff7b72;
+    }
+    
+    .token.atrule,
+    .token.attr-value,
+    .token.keyword {
+        color: #ff7b72;
+    }
+    
+    .token.function,
+    .token.class-name {
+        color: #d2a8ff;
+    }
+    
+    .token.regex,
+    .token.important,
+    .token.variable {
+        color: #ffa657;
+    }
+    
+    .line-highlight {
+        background: rgba(121, 192, 255, 0.1);
+        border-left-color: #79c0ff;
+    }
+    
+    .line-numbers-rows {
+        border-right-color: #30363d;
+    }
+    
+    .line-numbers-rows > span:before {
+        color: #6e7681;
+    }
+}

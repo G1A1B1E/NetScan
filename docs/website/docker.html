@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker - NetScan Documentation</title>
+    <meta name="description" content="Run NetScan in Docker containers for easy deployment and isolation.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⌘</span>
+                <span class="logo-text">NetScan</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Docs</a>
+                <a href="installation.html">Installation</a>
+                <a href="usage.html">Usage</a>
+                <a href="api.html">API</a>
+                <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">
+                    <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    GitHub
+                </a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="search-box">
+                    <input type="text" placeholder="Search docs..." id="search-input">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <div class="nav-section">
+                        <h3>Getting Started</h3>
+                        <ul>
+                            <li><a href="index.html">Introduction</a></li>
+                            <li><a href="installation.html">Installation</a></li>
+                            <li><a href="quickstart.html">Quick Start</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Core Features</h3>
+                        <ul>
+                            <li><a href="usage.html">Basic Usage</a></li>
+                            <li><a href="mac-lookup.html">MAC Lookup</a></li>
+                            <li><a href="network-scanning.html">Network Scanning</a></li>
+                            <li><a href="monitoring.html">Monitoring</a></li>
+                            <li><a href="web-interface.html">Web Interface</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Advanced</h3>
+                        <ul>
+                            <li><a href="configuration.html">Configuration</a></li>
+                            <li><a href="api.html">Python API</a></li>
+                            <li><a href="performance.html">Performance</a></li>
+                            <li><a href="docker.html" class="active">Docker</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Reference</h3>
+                        <ul>
+                            <li><a href="cli-reference.html">CLI Reference</a></li>
+                            <li><a href="troubleshooting.html">Troubleshooting</a></li>
+                            <li><a href="changelog.html">Changelog</a></li>
+                            <li><a href="contributing.html">Contributing</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <article class="doc-content">
+                <h1>Docker Deployment</h1>
+                <p class="lead">Run NetScan in Docker containers for easy deployment, isolation, and consistent environments across different systems.</p>
+
+                <!-- Overview -->
+                <section id="overview">
+                    <h2>Overview</h2>
+                    <p>NetScan provides full Docker support with:</p>
+                    <ul>
+                        <li><strong>Multi-stage build:</strong> Optimized image with Rust performance module</li>
+                        <li><strong>Docker Compose:</strong> Easy orchestration with persistent volumes</li>
+                        <li><strong>Helper script:</strong> Simple commands for common operations</li>
+                        <li><strong>Web interface:</strong> Browser-based access via container</li>
+                    </ul>
+                </section>
+
+                <!-- Quick Start -->
+                <section id="quick-start">
+                    <h2>Quick Start</h2>
+                    <p>Get started with Docker in seconds:</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Clone repository
+git clone https://github.com/G1A1B1E/NetScan.git
+cd NetScan
+
+# Build and run
+docker compose up -d
+
+# Attach to interactive menu
+docker attach netscan</code></pre>
+                    </div>
+
+                    <p>Or use the helper script:</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Build image
+./docker.sh build
+
+# Run interactive menu
+./docker.sh run</code></pre>
+                    </div>
+                </section>
+
+                <!-- Building -->
+                <section id="building">
+                    <h2>Building the Image</h2>
+
+                    <h3>Standard Build</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Build with Docker
+docker build -t netscan .
+
+# Build with Docker Compose
+docker compose build
+
+# Build with helper script
+./docker.sh build</code></pre>
+                    </div>
+
+                    <h3>Build Options</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Build without cache (fresh build)
+docker build --no-cache -t netscan .
+
+# Build with specific Python version
+docker build --build-arg PYTHON_VERSION=3.11 -t netscan .
+
+# Build for specific platform
+docker build --platform linux/amd64 -t netscan .</code></pre>
+                    </div>
+
+                    <h3>Dockerfile Structure</h3>
+                    <p>The multi-stage Dockerfile provides an optimized build:</p>
+
+                    <div class="code-block">
+                        <pre><code class="language-dockerfile"># Stage 1: Rust builder (optional performance module)
+FROM rust:1.75-slim AS rust-builder
+WORKDIR /app
+COPY rust_helpers/ ./rust_helpers/
+RUN cd rust_helpers && cargo build --release
+
+# Stage 2: Python runtime
+FROM python:3.11-slim
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    nmap arp-scan iproute2 iputils-ping \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy application
+COPY . .
+
+# Install Python packages
+RUN pip install --no-cache-dir requests netifaces
+
+# Copy compiled Rust module
+COPY --from=rust-builder /app/target/release/*.so ./helpers/
+
+ENTRYPOINT ["./netscan"]
+CMD ["--help"]</code></pre>
+                    </div>
+                </section>
+
+                <!-- Running -->
+                <section id="running">
+                    <h2>Running Containers</h2>
+
+                    <h3>Interactive Mode</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Run interactive menu
+docker run -it --rm --network host --cap-add NET_RAW netscan
+
+# With helper script
+./docker.sh run</code></pre>
+                    </div>
+
+                    <h3>MAC Lookup (No Special Permissions)</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Single lookup
+docker run --rm netscan -l 00:11:22:33:44:55
+
+# Batch lookup
+docker run --rm -v $(pwd)/macs.txt:/data/macs.txt netscan -b /data/macs.txt
+
+# With helper script
+./docker.sh lookup 00:11:22:33:44:55</code></pre>
+                    </div>
+
+                    <h3>Network Scanning (Requires Permissions)</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Quick scan
+docker run --rm --network host --cap-add NET_RAW netscan -s
+
+# Full scan with all capabilities
+docker run --rm \
+  --network host \
+  --cap-add NET_RAW \
+  --cap-add NET_ADMIN \
+  netscan -f
+
+# Scan specific target
+./docker.sh scan 192.168.1.0/24</code></pre>
+                    </div>
+
+                    <div class="warning-box info-box">
+                        <strong>⚠️ Required for Network Scanning:</strong>
+                        <ul>
+                            <li><code>--network host</code> — Access to host network interfaces</li>
+                            <li><code>--cap-add NET_RAW</code> — Required for ping and ARP operations</li>
+                            <li><code>--cap-add NET_ADMIN</code> — Required for interface operations</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Docker Compose -->
+                <section id="docker-compose">
+                    <h2>Docker Compose</h2>
+
+                    <h3>docker-compose.yml</h3>
+                    <div class="code-block">
+                        <pre><code class="language-yaml">version: '3.8'
+
+services:
+  netscan:
+    build: .
+    image: netscan:latest
+    container_name: netscan
+    stdin_open: true
+    tty: true
+    network_mode: host
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - netscan-data:/app/data
+      - netscan-logs:/app/logs
+      - netscan-cache:/app/cache
+      - netscan-exports:/app/exports
+    environment:
+      - NETSCAN_LOG_LEVEL=INFO
+    restart: unless-stopped
+
+  # Optional web interface
+  netscan-web:
+    build: .
+    image: netscan:latest
+    container_name: netscan-web
+    network_mode: host
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - netscan-data:/app/data
+    command: ["-w", "--port", "8080"]
+    profiles:
+      - web
+
+volumes:
+  netscan-data:
+  netscan-logs:
+  netscan-cache:
+  netscan-exports:</code></pre>
+                    </div>
+
+                    <h3>Basic Commands</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Start container
+docker compose up -d
+
+# Attach to running container
+docker attach netscan
+
+# View logs
+docker compose logs -f
+
+# Stop container
+docker compose down
+
+# Stop and remove volumes
+docker compose down -v</code></pre>
+                    </div>
+
+                    <h3>Start with Web Interface</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Start with web profile
+docker compose --profile web up -d
+
+# Access web interface
+open http://localhost:8080</code></pre>
+                    </div>
+                </section>
+
+                <!-- Helper Script -->
+                <section id="helper-script">
+                    <h2>Helper Script</h2>
+                    <p>The <code>docker.sh</code> script simplifies common Docker operations:</p>
+
+                    <h3>Available Commands</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash">./docker.sh build              # Build the Docker image
+./docker.sh run                # Run interactive menu
+./docker.sh scan [target]      # Network scan (default: auto-detect)
+./docker.sh lookup <mac>       # MAC address lookup
+./docker.sh web [port]         # Start web interface
+./docker.sh shell              # Open shell in container
+./docker.sh logs               # View container logs
+./docker.sh clean              # Remove containers and images</code></pre>
+                    </div>
+
+                    <h3>Examples</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Build and run
+./docker.sh build
+./docker.sh run
+
+# Scan home network
+./docker.sh scan 192.168.1.0/24
+
+# Look up Apple device
+./docker.sh lookup AC:DE:48:00:11:22
+
+# Start web interface on port 9000
+./docker.sh web 9000
+
+# Debug issues
+./docker.sh shell
+./docker.sh logs</code></pre>
+                    </div>
+                </section>
+
+                <!-- Volumes -->
+                <section id="volumes">
+                    <h2>Persistent Volumes</h2>
+                    <p>Docker Compose creates persistent volumes for data:</p>
+
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>Volume</th>
+                                <th>Path</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>netscan-data</code></td>
+                                <td>/app/data</td>
+                                <td>OUI database, configurations</td>
+                            </tr>
+                            <tr>
+                                <td><code>netscan-logs</code></td>
+                                <td>/app/logs</td>
+                                <td>Application logs</td>
+                            </tr>
+                            <tr>
+                                <td><code>netscan-cache</code></td>
+                                <td>/app/cache</td>
+                                <td>Lookup cache</td>
+                            </tr>
+                            <tr>
+                                <td><code>netscan-exports</code></td>
+                                <td>/app/exports</td>
+                                <td>Exported scan results</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Mount Local Directories</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Mount local exports directory
+docker run --rm \
+  --network host \
+  --cap-add NET_RAW \
+  -v $(pwd)/exports:/app/exports \
+  netscan -s -o /app/exports/scan.json</code></pre>
+                    </div>
+
+                    <h3>Backup Volumes</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Backup data volume
+docker run --rm -v netscan-data:/data -v $(pwd):/backup \
+  alpine tar czf /backup/netscan-data.tar.gz -C /data .
+
+# Restore data volume
+docker run --rm -v netscan-data:/data -v $(pwd):/backup \
+  alpine tar xzf /backup/netscan-data.tar.gz -C /data</code></pre>
+                    </div>
+                </section>
+
+                <!-- Environment Variables -->
+                <section id="environment">
+                    <h2>Environment Variables</h2>
+                    <p>Configure NetScan behavior with environment variables:</p>
+
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>NETSCAN_LOG_LEVEL</code></td>
+                                <td>INFO</td>
+                                <td>Logging level (DEBUG, INFO, WARN, ERROR)</td>
+                            </tr>
+                            <tr>
+                                <td><code>NETSCAN_CACHE_TTL</code></td>
+                                <td>3600</td>
+                                <td>Cache TTL in seconds</td>
+                            </tr>
+                            <tr>
+                                <td><code>NETSCAN_TIMEOUT</code></td>
+                                <td>5</td>
+                                <td>Network timeout in seconds</td>
+                            </tr>
+                            <tr>
+                                <td><code>NETSCAN_THREADS</code></td>
+                                <td>auto</td>
+                                <td>Number of scan threads</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Run with custom environment
+docker run --rm \
+  -e NETSCAN_LOG_LEVEL=DEBUG \
+  -e NETSCAN_TIMEOUT=10 \
+  --network host \
+  --cap-add NET_RAW \
+  netscan -s</code></pre>
+                    </div>
+                </section>
+
+                <!-- Web Interface -->
+                <section id="web-interface">
+                    <h2>Web Interface in Docker</h2>
+
+                    <h3>Start Web Server</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Using docker compose
+docker compose --profile web up -d
+
+# Using docker run
+docker run -d \
+  --name netscan-web \
+  --network host \
+  --cap-add NET_RAW \
+  netscan -w --port 8080
+
+# Using helper script
+./docker.sh web 8080</code></pre>
+                    </div>
+
+                    <h3>Access the Interface</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Open in browser
+open http://localhost:8080
+
+# Or using curl
+curl http://localhost:8080/api/status</code></pre>
+                    </div>
+                </section>
+
+                <!-- Advanced -->
+                <section id="advanced">
+                    <h2>Advanced Usage</h2>
+
+                    <h3>Custom Dockerfile</h3>
+                    <p>Create a custom image with additional tools:</p>
+                    <div class="code-block">
+                        <pre><code class="language-dockerfile">FROM netscan:latest
+
+# Add additional tools
+RUN apt-get update && apt-get install -y \
+    wireshark-common \
+    tcpdump \
+    && rm -rf /var/lib/apt/lists/*
+
+# Custom configuration
+COPY my-config.json /app/config/</code></pre>
+                    </div>
+
+                    <h3>Kubernetes Deployment</h3>
+                    <div class="code-block">
+                        <pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netscan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netscan
+  template:
+    metadata:
+      labels:
+        app: netscan
+    spec:
+      hostNetwork: true
+      containers:
+      - name: netscan
+        image: netscan:latest
+        command: ["-w", "--port", "8080"]
+        securityContext:
+          capabilities:
+            add: ["NET_RAW", "NET_ADMIN"]
+        ports:
+        - containerPort: 8080</code></pre>
+                    </div>
+
+                    <h3>CI/CD Integration</h3>
+                    <div class="code-block">
+                        <pre><code class="language-yaml"># GitHub Actions example
+name: Build NetScan Docker
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build image
+        run: docker build -t netscan .
+      
+      - name: Test image
+        run: docker run --rm netscan --version
+      
+      - name: Push to registry
+        run: |
+          docker tag netscan ghcr.io/${{ github.repository }}:latest
+          docker push ghcr.io/${{ github.repository }}:latest</code></pre>
+                    </div>
+                </section>
+
+                <!-- Troubleshooting -->
+                <section id="troubleshooting">
+                    <h2>Troubleshooting</h2>
+
+                    <h3>No devices found</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Ensure host network mode
+docker run --network host ...
+
+# Check network interfaces inside container
+./docker.sh shell
+ip addr show</code></pre>
+                    </div>
+
+                    <h3>Permission denied</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Add required capabilities
+docker run --cap-add NET_RAW --cap-add NET_ADMIN ...</code></pre>
+                    </div>
+
+                    <h3>Container won't start</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Check logs
+docker logs netscan
+
+# Run with debug output
+docker run -e NETSCAN_LOG_LEVEL=DEBUG netscan</code></pre>
+                    </div>
+
+                    <h3>Web interface not accessible</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Check if port is exposed
+docker ps -a
+
+# Check if web server is running
+docker exec netscan ps aux | grep python</code></pre>
+                    </div>
+                </section>
+            </article>
+
+            <!-- Footer -->
+            <footer class="doc-footer">
+                <div class="footer-nav">
+                    <div class="footer-prev">
+                        <a href="performance.html">
+                            <span>Previous</span>
+                            <strong>← Performance</strong>
+                        </a>
+                    </div>
+                    <div class="footer-next">
+                        <a href="cli-reference.html">
+                            <span>Next</span>
+                            <strong>CLI Reference →</strong>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-meta">
+                    <p>© 2024-2026 NetScan. Released under the MIT License.</p>
+                </div>
+            </footer>
+        </main>
+
+        <!-- Table of Contents -->
+        <aside class="toc">
+            <div class="toc-content">
+                <h4>On this page</h4>
+                <nav>
+                    <ul>
+                        <li><a href="#overview">Overview</a></li>
+                        <li><a href="#quick-start">Quick Start</a></li>
+                        <li><a href="#building">Building</a></li>
+                        <li><a href="#running">Running</a></li>
+                        <li><a href="#docker-compose">Docker Compose</a></li>
+                        <li><a href="#helper-script">Helper Script</a></li>
+                        <li><a href="#volumes">Volumes</a></li>
+                        <li><a href="#environment">Environment</a></li>
+                        <li><a href="#web-interface">Web Interface</a></li>
+                        <li><a href="#advanced">Advanced</a></li>
+                        <li><a href="#troubleshooting">Troubleshooting</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/prism.js"></script>
+</body>
+</html>

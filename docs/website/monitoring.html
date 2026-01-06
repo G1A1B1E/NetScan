@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html" class="active">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>Network Monitoring</h1>
+            <p class="lead">Continuously monitor your network for new devices, disconnections, and changes in real-time.</p>
+
+            <h2>Start Monitoring</h2>
+            <pre><code class="language-bash">netscan -m</code></pre>
+            <pre><code class="language-text">[*] Starting network monitor...
+[*] Monitoring 192.168.1.0/24
+[*] Press Ctrl+C to stop
+
+[14:32:15] New device: 192.168.1.25 (Apple, Inc.) AC:DE:48:XX:XX:XX
+[14:35:42] Device offline: 192.168.1.20 (VMware, Inc.)
+[14:40:18] New device: 192.168.1.30 (Unknown) 00:00:00:XX:XX:XX</code></pre>
+
+            <h2>Monitor Options</h2>
+            <pre><code class="language-bash"># Desktop notifications
+netscan -m --notify
+
+# Custom scan interval (seconds)
+netscan -m --interval 30
+
+# Log to file
+netscan -m --log /var/log/netscan.log
+
+# Specific target
+netscan -m -t 10.0.0.0/24
+
+# Combine options
+netscan -m --notify --interval 60 --log monitor.log</code></pre>
+
+            <h2>What's Monitored</h2>
+            <ul>
+                <li><strong>New devices</strong> — Alert when unknown MAC appears</li>
+                <li><strong>Offline devices</strong> — Notice when devices disconnect</li>
+                <li><strong>IP changes</strong> — Track when devices get new IPs</li>
+                <li><strong>Hostname changes</strong> — Detect hostname modifications</li>
+            </ul>
+
+            <h2>Scheduled Monitoring</h2>
+            <p>Run periodic scans with cron:</p>
+            <pre><code class="language-bash"># Edit crontab
+crontab -e
+
+# Scan every hour, save results
+0 * * * * /usr/local/bin/netscan -s -o ~/scans/hourly_$(date +\%H).json
+
+# Scan every 5 minutes, log new devices
+*/5 * * * * /usr/local/bin/netscan -s --json >> ~/scans/continuous.log</code></pre>
+
+            <h2>Python Monitoring Script</h2>
+            <pre><code class="language-python">from helpers.scanner import NetworkScanner
+import time
+
+scanner = NetworkScanner()
+known = set()
+
+while True:
+    devices = scanner.quick_scan()
+    current = {d['mac'] for d in devices}
+    
+    new = current - known
+    for mac in new:
+        dev = next(d for d in devices if d['mac'] == mac)
+        print(f"[NEW] {dev['ip']} - {dev['vendor']}")
+    
+    gone = known - current
+    for mac in gone:
+        print(f"[OFFLINE] {mac}")
+    
+    known = current
+    time.sleep(60)</code></pre>
+
+            <h2>Alert Integration</h2>
+            <pre><code class="language-bash"># Slack webhook
+netscan -m --webhook https://hooks.slack.com/services/XXX
+
+# Email alerts
+netscan -m --email admin@example.com
+
+# Custom script on new device
+netscan -m --on-new /path/to/alert.sh</code></pre>
+
+            <footer class="doc-footer"><div class="footer-nav">
+                <div class="footer-prev"><a href="network-scanning.html"><span>Previous</span><strong>← Network Scanning</strong></a></div>
+                <div class="footer-next"><a href="web-interface.html"><span>Next</span><strong>Web Interface →</strong></a></div>
+            </div></footer>
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>
