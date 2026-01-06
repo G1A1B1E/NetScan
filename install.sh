@@ -1,560 +1,454 @@
-#!/bin/bash
-# ============================================================================
-# NetScan Installation Script
-# ============================================================================
-# Installs NetScan and its dependencies
-# Usage: ./install.sh [--uninstall] [--local] [--check]
-# ============================================================================
+#!/usr/bin/env bash
+#===============================================================================
+# NetScan Installer v2.0
+# https://github.com/G1A1B1E/NetScan
+#
+# One-command installation:
+# curl -fsSL https://raw.githubusercontent.com/G1A1B1E/NetScan/main/install.sh | bash
+#===============================================================================
 
 set -e
 
-# Colors
+REPO_URL="https://github.com/G1A1B1E/NetScan.git"
+REPO_NAME="NetScan"
+DEFAULT_INSTALL_DIR="$HOME/.netscan"
+GLOBAL_BIN_DIR="/usr/local/bin"
+LOCAL_BIN_DIR="$HOME/.local/bin"
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-# Installation paths
-SCRIPT_NAME="netscan"
-INSTALL_DIR="/usr/local/bin"
-LOCAL_INSTALL_DIR="$HOME/.local/bin"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# ============================================================================
-# Helper Functions
-# ============================================================================
+INSTALL_MODE="global"
+SKIP_DEPS=false
+UNINSTALL=false
+UPDATE=false
+VERBOSE=false
+FORCE=false
 
 print_banner() {
     echo -e "${CYAN}"
-    echo "╔══════════════════════════════════════════════════════════════════╗"
-    echo "║                   NetScan Installation Script                     ║"
-    echo "╚══════════════════════════════════════════════════════════════════╝"
+    cat << 'BANNER'
+   ███╗   ██╗███████╗████████╗███████╗ ██████╗ █████╗ ███╗   ██╗
+   ████╗  ██║██╔════╝╚══██╔══╝██╔════╝██╔════╝██╔══██╗████╗  ██║
+   ██╔██╗ ██║█████╗     ██║   ███████╗██║     ███████║██╔██╗ ██║
+   ██║╚██╗██║██╔══╝     ██║   ╚════██║██║     ██╔══██║██║╚██╗██║
+   ██║ ╚████║███████╗   ██║   ███████║╚██████╗██║  ██║██║ ╚████║
+   ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝
+BANNER
     echo -e "${NC}"
-}
-
-print_step() {
-    echo -e "${BLUE}==>${NC} ${BOLD}$1${NC}"
-}
-
-print_success() {
-    echo -e "${GREEN}✓${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}!${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}✗${NC} $1"
-}
-
-print_info() {
-    echo -e "  $1"
-}
-
-# Check if command exists
-has_command() {
-    command -v "$1" &>/dev/null
-}
-
-# ============================================================================
-# Dependency Checks
-# ============================================================================
-
-check_dependencies() {
-    print_step "Checking dependencies..."
+    echo -e "${BOLD}   Network Scanner & MAC Vendor Lookup Tool${NC}"
+    echo -e "${BLUE}   https://github.com/G1A1B1E/NetScan${NC}"
     echo ""
-    
-    local all_good=true
-    local warnings=()
-    
-    # Required: bash 4+ (warning only, still works with 3.2)
-    local bash_version="${BASH_VERSION%%.*}"
-    if [[ "$bash_version" -ge 4 ]]; then
-        print_success "Bash $BASH_VERSION (4.0+ required)"
-    else
-        print_warning "Bash $BASH_VERSION (4.0+ recommended for all features)"
-        warnings+=("Consider upgrading bash: brew install bash")
-        # Don't fail - most features still work
-    fi
-    
-    # Required: curl
-    if has_command curl; then
-        local curl_version=$(curl --version | head -1 | awk '{print $2}')
-        print_success "curl $curl_version"
-    else
-        print_error "curl not found (required for vendor lookups)"
-        warnings+=("Install curl: brew install curl")
-        all_good=false
-    fi
-    
-    # Optional: Python 3.6+
-    if has_command python3; then
-        local py_version=$(python3 -c "import sys; print('.'.join(map(str, sys.version_info[:3])))" 2>/dev/null)
-        if python3 -c "import sys; exit(0 if sys.version_info >= (3, 6) else 1)" 2>/dev/null; then
-            print_success "Python $py_version (enables caching & fast parsing)"
-        else
-            print_warning "Python $py_version (3.6+ recommended)"
-            warnings+=("Upgrade Python for better performance: brew install python3")
+}
+
+log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[✓]${NC} $1"; }
+log_warning() { echo -e "${YELLOW}[!]${NC} $1"; }
+log_error() { echo -e "${RED}[✗]${NC} $1"; }
+log_step() { echo -e "${MAGENTA}[→]${NC} $1"; }
+
+command_exists() { command -v "$1" &> /dev/null; }
+
+get_os() {
+    case "$(uname -s)" in
+        Darwin*) echo "macos" ;;
+        Linux*)  echo "linux" ;;
+        *) echo "unknown" ;;
+    esac
+}
+
+get_shell_rc() {
+    local shell_name
+    shell_name=$(basename "$SHELL")
+    case "$shell_name" in
+        zsh)  echo "$HOME/.zshrc" ;;
+        bash) [[ -f "$HOME/.bash_profile" ]] && echo "$HOME/.bash_profile" || echo "$HOME/.bashrc" ;;
+        fish) echo "$HOME/.config/fish/config.fish" ;;
+        *)    echo "$HOME/.profile" ;;
+    esac
+}
+
+require_sudo() {
+    if [[ $EUID -ne 0 ]]; then
+        if ! sudo -v 2>/dev/null; then
+            log_error "This operation requires sudo privileges"
+            return 1
         fi
-    else
-        print_warning "Python 3 not found (optional, enables caching)"
-        warnings+=("Install Python 3 for better performance: brew install python3")
     fi
-    
-    # Optional: jq
-    if has_command jq; then
-        local jq_version=$(jq --version 2>/dev/null | tr -d 'jq-')
-        print_success "jq $jq_version (enhanced JSON parsing)"
-    else
-        print_warning "jq not found (optional, for better JSON parsing)"
-        warnings+=("Install jq for better JSON support: brew install jq")
-    fi
-    
-    # Optional: xmllint
-    if has_command xmllint; then
-        print_success "xmllint (enhanced XML parsing)"
-    else
-        print_warning "xmllint not found (optional, for better XML parsing)"
-    fi
-    
-    # Optional: nmap
-    if has_command nmap; then
-        local nmap_version=$(nmap --version | head -1 | awk '{print $3}')
-        print_success "nmap $nmap_version (network scanning)"
-    else
-        print_warning "nmap not found (optional, for network scanning)"
-        warnings+=("Install nmap for scanning: brew install nmap")
-    fi
-    
-    echo ""
-    
-    # Print warnings
-    if [[ ${#warnings[@]} -gt 0 ]]; then
-        print_step "Recommendations:"
-        for warning in "${warnings[@]}"; do
-            print_info "$warning"
-        done
-        echo ""
-    fi
-    
-    $all_good
 }
 
-# ============================================================================
-# Python Package Installation
-# ============================================================================
+detect_package_manager() {
+    if command_exists brew; then echo "brew"
+    elif command_exists apt-get; then echo "apt"
+    elif command_exists dnf; then echo "dnf"
+    elif command_exists yum; then echo "yum"
+    elif command_exists pacman; then echo "pacman"
+    else echo "unknown"
+    fi
+}
+
+install_package() {
+    local package="$1"
+    local pm
+    pm=$(detect_package_manager)
+    case "$pm" in
+        brew)   brew install "$package" ;;
+        apt)    sudo apt-get install -y "$package" ;;
+        dnf)    sudo dnf install -y "$package" ;;
+        yum)    sudo yum install -y "$package" ;;
+        pacman) sudo pacman -S --noconfirm "$package" ;;
+        *)      return 1 ;;
+    esac
+}
+
+check_and_install_deps() {
+    local os pm
+    os=$(get_os)
+    pm=$(detect_package_manager)
+    
+    log_step "Checking system dependencies..."
+    
+    local deps_needed=()
+    
+    command_exists git || deps_needed+=("git")
+    
+    if ! command_exists python3; then
+        [[ "$pm" == "brew" ]] && deps_needed+=("python@3") || deps_needed+=("python3")
+    fi
+    
+    if ! command_exists pip3 && ! python3 -m pip --version &>/dev/null; then
+        [[ "$pm" == "apt" ]] && deps_needed+=("python3-pip")
+    fi
+    
+    command_exists nmap || deps_needed+=("nmap")
+    
+    if [[ "$os" == "macos" ]]; then
+        command_exists ggrep || deps_needed+=("grep")
+        command_exists gsed || deps_needed+=("gnu-sed")
+        command_exists gawk || deps_needed+=("gawk")
+    fi
+    
+    if [[ ${#deps_needed[@]} -gt 0 ]]; then
+        log_warning "Missing dependencies: ${deps_needed[*]}"
+        
+        if [[ "$pm" == "unknown" ]]; then
+            log_error "No supported package manager found. Please install manually:"
+            printf "  - %s\n" "${deps_needed[@]}"
+            return 1
+        fi
+        
+        log_step "Installing dependencies via $pm..."
+        
+        case "$pm" in
+            apt)  sudo apt-get update -qq ;;
+            brew) brew update --quiet 2>/dev/null || true ;;
+        esac
+        
+        for dep in "${deps_needed[@]}"; do
+            log_step "Installing $dep..."
+            install_package "$dep" || log_warning "Failed to install $dep"
+        done
+    fi
+    
+    log_success "All system dependencies satisfied"
+}
 
 install_python_packages() {
-    print_step "Setting up Python helpers..."
+    log_step "Installing Python packages..."
     
-    # Check if Python 3 is available
-    if ! has_command python3; then
-        print_warning "Python 3 not found, skipping Python package installation"
-        return 1
-    fi
+    local pip_cmd
+    command_exists pip3 && pip_cmd="pip3" || pip_cmd="python3 -m pip"
     
-    # Check if pip is available
-    local pip_cmd=""
-    if has_command pip3; then
-        pip_cmd="pip3"
-    elif python3 -m pip --version &>/dev/null; then
-        pip_cmd="python3 -m pip"
-    else
-        print_warning "pip not found, skipping Python package installation"
-        print_info "Install pip: curl https://bootstrap.pypa.io/get-pip.py | python3"
-        return 1
-    fi
-    
-    # Required packages for helpers
-    local packages=(
-        "requests"      # HTTP requests for API calls
-    )
-    
-    # Optional packages for advanced features
-    local optional_packages=(
-        "reportlab"     # PDF generation (for report_generator.py)
-        "matplotlib"    # Charts and graphs (for report_generator.py)
-    )
-    
-    echo ""
-    print_info "Checking required Python packages..."
-    
-    local needs_install=()
+    local packages=("requests" "netifaces")
+    local optional=("reportlab" "matplotlib" "scapy" "python-nmap")
     
     for pkg in "${packages[@]}"; do
-        if python3 -c "import $pkg" 2>/dev/null; then
-            print_success "$pkg installed"
-        else
-            print_warning "$pkg not found"
-            needs_install+=("$pkg")
+        if ! python3 -c "import ${pkg//-/_}" &>/dev/null 2>&1; then
+            log_step "Installing $pkg..."
+            $pip_cmd install --user "$pkg" &>/dev/null || log_warning "Failed to install $pkg"
         fi
     done
     
-    # Install missing required packages
-    if [[ ${#needs_install[@]} -gt 0 ]]; then
-        echo ""
-        print_info "Installing missing packages: ${needs_install[*]}"
-        
-        # Try user install first (no sudo needed)
-        if $pip_cmd install --user "${needs_install[@]}" 2>/dev/null; then
-            print_success "Installed Python packages successfully"
-        else
-            # Try with --break-system-packages for newer systems
-            if $pip_cmd install --user --break-system-packages "${needs_install[@]}" 2>/dev/null; then
-                print_success "Installed Python packages successfully"
-            else
-                print_warning "Could not install Python packages automatically"
-                print_info "Try manually: $pip_cmd install --user ${needs_install[*]}"
-            fi
-        fi
-    fi
-    
-    # Check optional packages
-    echo ""
-    print_info "Checking optional Python packages..."
-    
-    local optional_missing=()
-    for pkg in "${optional_packages[@]}"; do
-        if python3 -c "import $pkg" 2>/dev/null; then
-            print_success "$pkg installed"
-        else
-            print_warning "$pkg not found (optional: enables PDF reports/charts)"
-            optional_missing+=("$pkg")
-        fi
+    log_step "Installing optional packages..."
+    for pkg in "${optional[@]}"; do
+        $pip_cmd install --user "$pkg" &>/dev/null 2>&1 || true
     done
     
-    if [[ ${#optional_missing[@]} -gt 0 ]]; then
-        echo ""
-        print_info "To enable PDF reports and charts, install:"
-        print_info "  $pip_cmd install --user ${optional_missing[*]}"
-    fi
-    
-    # Verify helpers work
-    echo ""
-    print_info "Verifying Python helpers..."
-    
-    local helper_dir="$SCRIPT_DIR/helpers"
-    local helpers_ok=true
-    local helpers_count=0
-    local helpers_working=0
-    
-    # Core helpers
-    local core_helpers=(
-        "vendor_cache.py"
-        "fast_parser.py"
-        "mac_normalizer.py"
-        "network_helper.py"
-        "export_helper.py"
-    )
-    
-    # Advanced helpers (new)
-    local advanced_helpers=(
-        "async_scanner.py"
-        "monitor.py"
-        "report_generator.py"
-        "config_manager.py"
-        "web_server.py"
-    )
-    
-    echo ""
-    print_info "Core helpers:"
-    for helper in "${core_helpers[@]}"; do
-        ((helpers_count++))
-        if [[ -f "$helper_dir/$helper" ]]; then
-            if python3 "$helper_dir/$helper" --help &>/dev/null; then
-                print_success "$helper ready"
-                ((helpers_working++))
-            else
-                print_warning "$helper has issues"
-                helpers_ok=false
-            fi
-        else
-            print_warning "$helper not found"
-        fi
-    done
-    
-    echo ""
-    print_info "Advanced helpers:"
-    for helper in "${advanced_helpers[@]}"; do
-        ((helpers_count++))
-        if [[ -f "$helper_dir/$helper" ]]; then
-            if python3 "$helper_dir/$helper" --help &>/dev/null; then
-                print_success "$helper ready"
-                ((helpers_working++))
-            else
-                print_warning "$helper has issues (check dependencies)"
-                helpers_ok=false
-            fi
-        else
-            print_warning "$helper not found"
-        fi
-    done
-    
-    echo ""
-    print_info "$helpers_working/$helpers_count Python helpers available"
-    
-    if $helpers_ok; then
-        print_success "All Python helpers are ready"
-    else
-        print_warning "Some Python helpers may need additional dependencies"
-        print_info "Most features will still work without optional packages"
-    fi
-    
-    return 0
+    log_success "Python packages installed"
 }
 
-# ============================================================================
-# Installation Functions
-# ============================================================================
+clone_or_update_repo() {
+    local install_dir="$1"
+    
+    if [[ -d "$install_dir/.git" ]]; then
+        log_step "Updating existing installation..."
+        cd "$install_dir"
+        git pull origin main 2>/dev/null || git pull origin master 2>/dev/null || log_warning "Could not update"
+    elif [[ -d "$install_dir" ]]; then
+        if $FORCE; then
+            log_warning "Removing existing directory..."
+            rm -rf "$install_dir"
+            log_step "Cloning NetScan repository..."
+            git clone "$REPO_URL" "$install_dir"
+        else
+            log_error "Directory $install_dir already exists. Use --force to overwrite."
+            return 1
+        fi
+    else
+        log_step "Cloning NetScan repository..."
+        git clone "$REPO_URL" "$install_dir"
+    fi
+    
+    cd "$install_dir"
+    log_success "Repository ready at $install_dir"
+}
 
 setup_directories() {
-    print_step "Setting up directories..."
-    
-    local dirs=("exports" "logs" "cache" "example")
-    
-    for dir in "${dirs[@]}"; do
-        if [[ ! -d "$SCRIPT_DIR/$dir" ]]; then
-            mkdir -p "$SCRIPT_DIR/$dir"
-            print_success "Created $dir/"
-        else
-            print_info "$dir/ exists"
-        fi
-    done
-    
-    echo ""
+    local install_dir="$1"
+    log_step "Setting up directories..."
+    mkdir -p "$install_dir"/{cache,logs,exports,reports,files,data}
+    log_success "Directories created"
 }
 
 set_permissions() {
-    print_step "Setting file permissions..."
-    
-    # Make main script executable
-    chmod +x "$SCRIPT_DIR/netscan" 2>/dev/null && \
-        print_success "netscan"
-    
-    # Make lib scripts executable
-    for script in "$SCRIPT_DIR/lib"/*.sh; do
-        if [[ -f "$script" ]]; then
-            chmod +x "$script" 2>/dev/null && \
-                print_success "lib/$(basename "$script")"
-        fi
-    done
-    
-    # Make helper scripts executable
-    for script in "$SCRIPT_DIR/helpers"/*.py; do
-        if [[ -f "$script" ]]; then
-            chmod +x "$script" 2>/dev/null && \
-                print_success "helpers/$(basename "$script")"
-        fi
-    done
-    
-    # Make install script executable
-    chmod +x "$SCRIPT_DIR/install.sh" 2>/dev/null && \
-        print_success "install.sh"
-    
-    echo ""
-}
-
-create_symlink() {
-    local target_dir="$1"
-    local link_path="$target_dir/$SCRIPT_NAME"
-    local script_path="$SCRIPT_DIR/netscan"
-    
-    # Check if we need sudo
-    local use_sudo=false
-    if [[ ! -w "$target_dir" ]]; then
-        use_sudo=true
-    fi
-    
-    # Remove existing link/file
-    if [[ -L "$link_path" ]] || [[ -f "$link_path" ]]; then
-        if $use_sudo; then
-            sudo rm -f "$link_path"
-        else
-            rm -f "$link_path"
-        fi
-    fi
-    
-    # Create symlink
-    if $use_sudo; then
-        sudo ln -s "$script_path" "$link_path"
-    else
-        ln -s "$script_path" "$link_path"
-    fi
-    
-    print_success "Created symlink: $link_path -> $script_path"
+    local install_dir="$1"
+    log_step "Setting file permissions..."
+    chmod +x "$install_dir/netscan" 2>/dev/null || true
+    [[ -d "$install_dir/lib" ]] && find "$install_dir/lib" -name "*.sh" -exec chmod +x {} \;
+    [[ -d "$install_dir/helpers" ]] && find "$install_dir/helpers" -name "*.py" -exec chmod +x {} \;
+    log_success "Permissions set"
 }
 
 install_global() {
-    print_step "Installing globally to $INSTALL_DIR..."
+    local install_dir="$1"
+    log_step "Installing globally (requires sudo)..."
+    require_sudo || return 1
     
-    if [[ ! -d "$INSTALL_DIR" ]]; then
-        print_error "$INSTALL_DIR does not exist"
-        return 1
-    fi
+    local target="$GLOBAL_BIN_DIR/netscan"
+    sudo rm -f "$target" 2>/dev/null
     
-    create_symlink "$INSTALL_DIR"
-    echo ""
+    sudo tee "$target" > /dev/null << EOF
+#!/usr/bin/env bash
+NETSCAN_HOME="$install_dir"
+export NETSCAN_HOME
+cd "\$NETSCAN_HOME" 2>/dev/null || true
+exec "\$NETSCAN_HOME/netscan" "\$@"
+EOF
+    
+    sudo chmod +x "$target"
+    log_success "Installed to $target"
 }
 
 install_local() {
-    print_step "Installing locally to $LOCAL_INSTALL_DIR..."
+    local install_dir="$1"
+    log_step "Installing for current user..."
+    mkdir -p "$LOCAL_BIN_DIR"
     
-    # Create local bin if it doesn't exist
-    if [[ ! -d "$LOCAL_INSTALL_DIR" ]]; then
-        mkdir -p "$LOCAL_INSTALL_DIR"
-        print_success "Created $LOCAL_INSTALL_DIR"
+    local target="$LOCAL_BIN_DIR/netscan"
+    rm -f "$target" 2>/dev/null
+    
+    cat > "$target" << EOF
+#!/usr/bin/env bash
+NETSCAN_HOME="$install_dir"
+export NETSCAN_HOME
+cd "\$NETSCAN_HOME" 2>/dev/null || true
+exec "\$NETSCAN_HOME/netscan" "\$@"
+EOF
+    
+    chmod +x "$target"
+    
+    local shell_rc
+    shell_rc=$(get_shell_rc)
+    
+    if ! echo "$PATH" | grep -q "$LOCAL_BIN_DIR"; then
+        if ! grep -q ".local/bin" "$shell_rc" 2>/dev/null; then
+            echo "" >> "$shell_rc"
+            echo "# Added by NetScan installer" >> "$shell_rc"
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$shell_rc"
+            log_info "Added PATH to $shell_rc"
+            log_warning "Run 'source $shell_rc' or restart your terminal"
+        fi
     fi
     
-    create_symlink "$LOCAL_INSTALL_DIR"
-    
-    # Check if local bin is in PATH
-    if [[ ":$PATH:" != *":$LOCAL_INSTALL_DIR:"* ]]; then
-        echo ""
-        print_warning "$LOCAL_INSTALL_DIR is not in your PATH"
-        print_info "Add this line to your ~/.zshrc or ~/.bashrc:"
-        echo ""
-        echo -e "    ${CYAN}export PATH=\"\$HOME/.local/bin:\$PATH\"${NC}"
-        echo ""
-    fi
-    
-    echo ""
+    log_success "Installed to $target"
 }
 
-# ============================================================================
-# Uninstallation
-# ============================================================================
-
-uninstall() {
-    print_step "Uninstalling NetScan..."
-    echo ""
+verify_installation() {
+    local install_dir="$1"
+    log_step "Verifying installation..."
     
-    # Remove global symlink
-    if [[ -L "$INSTALL_DIR/$SCRIPT_NAME" ]]; then
-        sudo rm -f "$INSTALL_DIR/$SCRIPT_NAME" && \
-            print_success "Removed $INSTALL_DIR/$SCRIPT_NAME"
+    local errors=0
+    
+    [[ ! -x "$install_dir/netscan" ]] && { log_error "Main script not executable"; ((errors++)); }
+    
+    for helper in vendor_cache.py fast_parser.py mac_normalizer.py network_helper.py export_helper.py async_scanner.py monitor.py report_generator.py config_manager.py web_server.py; do
+        [[ ! -f "$install_dir/helpers/$helper" ]] && log_warning "Helper not found: $helper"
+    done
+    
+    for lib in config.sh utils.sh lookup.sh scanner.sh; do
+        [[ ! -f "$install_dir/lib/$lib" ]] && log_warning "Library not found: $lib"
+    done
+    
+    python3 --version &>/dev/null || { log_error "Python 3 not working"; ((errors++)); }
+    
+    if python3 "$install_dir/helpers/mac_normalizer.py" "00:11:22:33:44:55" &>/dev/null; then
+        log_success "Python helpers working"
+    else
+        log_warning "Python helper test failed (may still work)"
     fi
     
-    # Remove local symlink
-    if [[ -L "$LOCAL_INSTALL_DIR/$SCRIPT_NAME" ]]; then
-        rm -f "$LOCAL_INSTALL_DIR/$SCRIPT_NAME" && \
-            print_success "Removed $LOCAL_INSTALL_DIR/$SCRIPT_NAME"
-    fi
-    
-    echo ""
-    print_info "Note: Source files and data in $SCRIPT_DIR were not removed."
-    print_info "To remove completely, delete the directory manually."
-    echo ""
+    [[ $errors -eq 0 ]] && log_success "Installation verified!" || log_error "Installation has $errors error(s)"
 }
 
-# ============================================================================
-# Post-Install
-# ============================================================================
+uninstall_netscan() {
+    log_step "Uninstalling NetScan..."
+    
+    [[ -f "$GLOBAL_BIN_DIR/netscan" ]] && { require_sudo && sudo rm -f "$GLOBAL_BIN_DIR/netscan"; }
+    [[ -f "$LOCAL_BIN_DIR/netscan" ]] && rm -f "$LOCAL_BIN_DIR/netscan"
+    
+    if [[ -d "$DEFAULT_INSTALL_DIR" ]]; then
+        read -p "Remove installation directory $DEFAULT_INSTALL_DIR? [y/N] " -n 1 -r
+        echo
+        [[ $REPLY =~ ^[Yy]$ ]] && rm -rf "$DEFAULT_INSTALL_DIR" && log_success "Removed $DEFAULT_INSTALL_DIR"
+    fi
+    
+    log_success "NetScan uninstalled"
+}
 
 print_post_install() {
+    local install_dir="$1"
+    local install_mode="$2"
+    
     echo ""
-    echo -e "${GREEN}╔══════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║                    Installation Complete!                         ║${NC}"
-    echo -e "${GREEN}╚══════════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${GREEN}══════════════════════════════════════════════════════════════════${NC}"
+    echo -e "${GREEN}           NetScan installed successfully!${NC}"
+    echo -e "${GREEN}══════════════════════════════════════════════════════════════════${NC}"
+    echo ""
+    echo -e "${BOLD}Installation Details:${NC}"
+    echo -e "  Location: ${CYAN}$install_dir${NC}"
+    echo -e "  Mode: ${CYAN}$install_mode${NC}"
     echo ""
     echo -e "${BOLD}Quick Start:${NC}"
+    echo -e "  ${YELLOW}netscan${NC}                       # Launch interactive menu"
+    echo -e "  ${YELLOW}netscan -l 00:11:22:33:44:55${NC}  # Lookup MAC vendor"
+    echo -e "  ${YELLOW}netscan -s${NC}                    # Scan network"
+    echo -e "  ${YELLOW}netscan -w${NC}                    # Start web interface"
+    echo -e "  ${YELLOW}netscan --help${NC}                # Show all options"
     echo ""
-    echo -e "  Run NetScan:        ${CYAN}netscan${NC}"
-    echo -e "  From this folder:   ${CYAN}./netscan${NC}"
-    echo ""
-    echo -e "${BOLD}Usage Examples:${NC}"
-    echo ""
-    echo -e "  Load ARP table:     ${CYAN}arp -a > arp.txt && netscan${NC}"
-    echo -e "  Load nmap scan:     ${CYAN}nmap -sn 192.168.1.0/24 -oX scan.xml${NC}"
-    echo ""
-    echo -e "${BOLD}Supported Formats:${NC}"
-    echo ""
-    echo -e "  • Nmap XML output     ${DIM}(nmap -oX)${NC}"
-    echo -e "  • ARP table output    ${DIM}(arp -a)${NC}"
-    echo -e "  • CSV files           ${DIM}(mac,ip,hostname)${NC}"
-    echo -e "  • JSON files          ${DIM}(array of devices)${NC}"
-    echo -e "  • Plain text          ${DIM}(one MAC per line)${NC}"
+    echo -e "${BOLD}Documentation:${NC}"
+    echo -e "  README: ${CYAN}$install_dir/README.md${NC}"
+    echo -e "  GitHub: ${CYAN}https://github.com/G1A1B1E/NetScan${NC}"
     echo ""
 }
 
-# ============================================================================
-# Main
-# ============================================================================
+show_usage() {
+    cat << 'USAGE'
+NetScan Installer
+
+Usage: ./install.sh [OPTIONS]
+
+Installation Options:
+  --global        Install system-wide to /usr/local/bin (default, requires sudo)
+  --local         Install for current user only (~/.local/bin)
+  --portable      Just clone the repo, don't create symlinks
+  --dir PATH      Custom installation directory (default: ~/.netscan)
+
+Other Options:
+  --update        Update existing installation
+  --uninstall     Remove NetScan installation
+  --skip-deps     Skip dependency installation
+  --force         Force overwrite existing installation
+  --verbose       Show detailed output
+  -h, --help      Show this help message
+
+Examples:
+  # One-line install (global):
+  curl -fsSL https://raw.githubusercontent.com/G1A1B1E/NetScan/main/install.sh | bash
+
+  # Install for current user only:
+  bash <(curl -fsSL https://raw.githubusercontent.com/G1A1B1E/NetScan/main/install.sh) --local
+
+  # Custom directory:
+  ./install.sh --dir ~/tools/netscan --local
+
+USAGE
+}
 
 main() {
-    print_banner
-    
-    # Parse arguments
-    local do_uninstall=false
-    local do_local=false
-    local do_check=false
+    local install_dir="$DEFAULT_INSTALL_DIR"
     
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            --uninstall|-u)
-                do_uninstall=true
-                ;;
-            --local|-l)
-                do_local=true
-                ;;
-            --check|-c)
-                do_check=true
-                ;;
-            --help|-h)
-                echo "Usage: $0 [options]"
-                echo ""
-                echo "Options:"
-                echo "  --check, -c      Check dependencies only"
-                echo "  --local, -l      Install to ~/.local/bin instead of /usr/local/bin"
-                echo "  --uninstall, -u  Remove NetScan installation"
-                echo "  --help, -h       Show this help message"
-                echo ""
-                exit 0
-                ;;
-            *)
-                print_error "Unknown option: $1"
-                exit 1
-                ;;
+            --global)     INSTALL_MODE="global"; shift ;;
+            --local)      INSTALL_MODE="local"; shift ;;
+            --portable)   INSTALL_MODE="portable"; shift ;;
+            --dir)        install_dir="$2"; shift 2 ;;
+            --update)     UPDATE=true; shift ;;
+            --uninstall)  UNINSTALL=true; shift ;;
+            --skip-deps)  SKIP_DEPS=true; shift ;;
+            --force)      FORCE=true; shift ;;
+            --verbose)    VERBOSE=true; shift ;;
+            -h|--help)    show_usage; exit 0 ;;
+            *)            log_error "Unknown option: $1"; show_usage; exit 1 ;;
         esac
-        shift
     done
     
-    # Handle uninstall
-    if $do_uninstall; then
-        uninstall
+    print_banner
+    
+    if $UNINSTALL; then
+        uninstall_netscan
         exit 0
     fi
     
-    # Check dependencies
-    check_dependencies
-    local deps_ok=$?
-    
-    # Check only mode
-    if $do_check; then
-        if [[ $deps_ok -eq 0 ]]; then
-            print_success "All required dependencies are installed"
-        else
-            print_error "Some required dependencies are missing"
-        fi
-        exit $deps_ok
+    local running_from_repo=false
+    if [[ -f "./netscan" && -d "./lib" && -d "./helpers" ]]; then
+        running_from_repo=true
+        install_dir="$(pwd)"
+        log_info "Running from within NetScan repository"
     fi
     
-    # Continue with installation
-    setup_directories
-    set_permissions
-    install_python_packages
+    echo -e "${BOLD}Installation Configuration:${NC}"
+    echo -e "  Mode: ${CYAN}$INSTALL_MODE${NC}"
+    echo -e "  Directory: ${CYAN}$install_dir${NC}"
+    echo ""
     
-    # Install
-    if $do_local; then
-        install_local
-    else
-        install_global || install_local
+    if ! $SKIP_DEPS; then
+        check_and_install_deps || { log_error "Failed to install dependencies"; exit 1; }
+        install_python_packages
     fi
     
-    print_post_install
+    if ! $running_from_repo; then
+        clone_or_update_repo "$install_dir" || exit 1
+    fi
+    
+    setup_directories "$install_dir"
+    set_permissions "$install_dir"
+    
+    case "$INSTALL_MODE" in
+        global)
+            install_global "$install_dir" || {
+                log_warning "Global install failed, falling back to local install"
+                INSTALL_MODE="local"
+                install_local "$install_dir"
+            }
+            ;;
+        local)
+            install_local "$install_dir"
+            ;;
+        portable)
+            log_success "Portable installation complete"
+            log_info "Run directly with: $install_dir/netscan"
+            ;;
+    esac
+    
+    verify_installation "$install_dir"
+    print_post_install "$install_dir" "$INSTALL_MODE"
 }
 
 main "$@"
