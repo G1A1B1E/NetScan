@@ -5,6 +5,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-01-06
+
+### Added
+- **Device Fingerprinting** (`fingerprint.py`)
+  - Device type classification (router, phone, laptop, IoT, printer, etc.)
+  - OS detection via TTL and port signatures
+  - Service identification with confidence scoring
+  - MAC vendor + open ports + TTL analysis
+  - Batch fingerprinting from scan results
+
+- **Wake-on-LAN** (`wol.py`)
+  - Magic packet generation and sending
+  - Favorites list for quick device waking
+  - Multiple MAC format support (colons, dashes, plain)
+  - Broadcast and directed wake modes
+  - Wake multiple devices at once
+
+- **Export Module** (`export.py`)
+  - CSV export (spreadsheet compatible)
+  - Styled HTML reports with charts
+  - JSON structured data export
+  - PDF generation (via wkhtmltopdf)
+  - Bulk export to all formats
+
+- **Scheduled Scanning** (`scheduler.py`)
+  - Cron integration (Linux)
+  - launchd integration (macOS)
+  - Predefined schedules (hourly, daily, weekly, monthly)
+  - Custom cron expressions
+  - Email notifications on changes
+  - Automatic report generation
+
+- **Network Topology** (`topology.py`)
+  - ASCII art network visualization
+  - Interactive HTML with vis.js
+  - DOT/Graphviz export
+  - Gateway and subnet detection
+  - Device type grouping
+
+- **Security Audit** (`security.py`)
+  - Open port risk assessment
+  - Service vulnerability checks
+  - SSL certificate validation
+  - HTTP security header analysis
+  - Risk scoring (critical/high/medium/low)
+  - HTML security reports
+  - Actionable recommendations
+
+- **Desktop Notifications** in monitor.py
+  - macOS notification center support
+  - Linux libnotify support
+  - Windows toast notifications
+  - Configurable alert triggers
+
+### Changed
+- Enhanced scanner.sh menu with v1.1 features
+- Added 6 new menu options (f, z, j, y, s, x)
+- Improved shell function organization
+
 ## [2.0.0] - 2026-01-06
 
 ### Added

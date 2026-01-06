@@ -17,6 +17,12 @@ MONITOR_HELPER="$SCRIPT_DIR/helpers/monitor.py"
 REPORT_HELPER="$SCRIPT_DIR/helpers/report_generator.py"
 CONFIG_HELPER="$SCRIPT_DIR/helpers/config_manager.py"
 WEB_SERVER="$SCRIPT_DIR/helpers/web_server.py"
+EXPORT_HELPER="$SCRIPT_DIR/helpers/export.py"
+FINGERPRINT_HELPER="$SCRIPT_DIR/helpers/fingerprint.py"
+WOL_HELPER="$SCRIPT_DIR/helpers/wol.py"
+SCHEDULER_HELPER="$SCRIPT_DIR/helpers/scheduler.py"
+TOPOLOGY_HELPER="$SCRIPT_DIR/helpers/topology.py"
+SECURITY_HELPER="$SCRIPT_DIR/helpers/security.py"
 
 # Check if Python helpers are available
 has_async_scanner() {
@@ -37,6 +43,30 @@ has_config() {
 
 has_web() {
     [[ -f "$WEB_SERVER" ]] && command -v python3 &>/dev/null
+}
+
+has_export() {
+    [[ -f "$EXPORT_HELPER" ]] && command -v python3 &>/dev/null
+}
+
+has_fingerprint() {
+    [[ -f "$FINGERPRINT_HELPER" ]] && command -v python3 &>/dev/null
+}
+
+has_wol() {
+    [[ -f "$WOL_HELPER" ]] && command -v python3 &>/dev/null
+}
+
+has_scheduler() {
+    [[ -f "$SCHEDULER_HELPER" ]] && command -v python3 &>/dev/null
+}
+
+has_topology() {
+    [[ -f "$TOPOLOGY_HELPER" ]] && command -v python3 &>/dev/null
+}
+
+has_security() {
+    [[ -f "$SECURITY_HELPER" ]] && command -v python3 &>/dev/null
 }
 
 # ============================================================================
@@ -84,8 +114,26 @@ show_scan_menu() {
     if has_monitor; then
         echo -e "  ${GREEN}w)${NC} 👁️  Real-time monitor ${DIM}(watch for new devices)${NC}"
     fi
+    if has_fingerprint; then
+        echo -e "  ${GREEN}f)${NC} 🔬 Device fingerprint ${DIM}(identify device types)${NC}"
+    fi
+    if has_wol; then
+        echo -e "  ${GREEN}z)${NC} ⚡ Wake-on-LAN ${DIM}(wake devices remotely)${NC}"
+    fi
+    if has_scheduler; then
+        echo -e "  ${GREEN}j)${NC} ⏰ Scheduled scans ${DIM}(automate with cron/launchd)${NC}"
+    fi
+    if has_topology; then
+        echo -e "  ${GREEN}y)${NC} 🗺️  Network topology ${DIM}(visualize network map)${NC}"
+    fi
+    if has_security; then
+        echo -e "  ${GREEN}s)${NC} 🔒 Security audit ${DIM}(vulnerability assessment)${NC}"
+    fi
     if has_reports; then
         echo -e "  ${GREEN}t)${NC} 📊 Generate report ${DIM}(PDF/HTML export)${NC}"
+    fi
+    if has_export; then
+        echo -e "  ${GREEN}x)${NC} 📤 Export results ${DIM}(CSV/HTML/JSON/Markdown)${NC}"
     fi
     if has_config; then
         echo -e "  ${GREEN}g)${NC} ⚙️  Configuration ${DIM}(preferences, custom OUIs)${NC}"
@@ -138,7 +186,13 @@ handle_scan_menu() {
             m|M) scan_nmap_mac; continue ;;
             a|A) scan_arp_scan; continue ;;
             w|W) start_monitor; continue ;;
+            f|F) run_fingerprint; continue ;;
+            z|Z) run_wol; continue ;;
+            j|J) run_scheduler; continue ;;
+            y|Y) run_topology; continue ;;
+            s|S) run_security; continue ;;
             t|T) generate_report; continue ;;
+            x|X) run_export; continue ;;
             g|G) manage_config; continue ;;
             b|B) start_web_server; continue ;;
             k|K) kill_web_server; continue ;;
@@ -920,6 +974,590 @@ start_monitor() {
             read -r mac
             if [[ -n "$mac" ]]; then
                 python3 "$MONITOR_HELPER" --mark-known "$mac" 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        0|"") return ;;
+    esac
+    
+    press_enter
+}
+
+# F. Device Fingerprinting (v1.1)
+run_fingerprint() {
+    if ! has_fingerprint; then
+        print_error "Device fingerprinting not available"
+        echo -e "  ${DIM}Check helpers/fingerprint.py exists and Python 3 is installed${NC}"
+        press_enter
+        return 1
+    fi
+    
+    clear
+    print_header "Device Fingerprinting"
+    echo -e "  ${DIM}Identify device types using MAC, ports, and TTL analysis${NC}"
+    echo ""
+    
+    echo -e "  ${BOLD}Fingerprint options:${NC}"
+    echo -e "  ${GREEN}1)${NC} 🎯 Fingerprint single device"
+    echo -e "  ${GREEN}2)${NC} 🔍 Scan & fingerprint network"
+    echo -e "  ${GREEN}3)${NC} 📊 Show device type summary"
+    echo -e "  ${GREEN}4)${NC} 📋 Export fingerprint database"
+    echo -e "  ${GREEN}0)${NC} Back"
+    echo ""
+    read -r -p "  Select: " fp_choice
+    
+    case "$fp_choice" in
+        1)
+            echo ""
+            echo -e "  ${CYAN}Target IP address:${NC}"
+            read -r target_ip
+            if [[ -n "$target_ip" ]]; then
+                echo ""
+                print_progress "Fingerprinting $target_ip..."
+                echo ""
+                python3 "$FINGERPRINT_HELPER" --target "$target_ip" --verbose 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        2)
+            echo ""
+            print_progress "Scanning network and fingerprinting devices..."
+            echo -e "  ${DIM}This may take a few minutes...${NC}"
+            echo ""
+            python3 "$FINGERPRINT_HELPER" --scan-network --verbose 2>&1 | sed 's/^/  /'
+            ;;
+        3)
+            echo ""
+            print_header "Device Type Summary"
+            python3 "$FINGERPRINT_HELPER" --summary 2>&1 | sed 's/^/  /'
+            ;;
+        4)
+            local outfile
+            outfile=$(get_output_filename "fingerprints" "json")
+            echo ""
+            print_progress "Exporting fingerprint database..."
+            python3 "$FINGERPRINT_HELPER" --export "$outfile" 2>&1 | sed 's/^/  /'
+            if [[ -f "$outfile" ]]; then
+                print_success "Exported to: $outfile"
+            fi
+            ;;
+        0|"") return ;;
+    esac
+    
+    press_enter
+}
+
+# Z. Wake-on-LAN (v1.1)
+run_wol() {
+    if ! has_wol; then
+        print_error "Wake-on-LAN not available"
+        echo -e "  ${DIM}Check helpers/wol.py exists and Python 3 is installed${NC}"
+        press_enter
+        return 1
+    fi
+    
+    clear
+    print_header "Wake-on-LAN"
+    echo -e "  ${DIM}Send magic packets to wake sleeping devices${NC}"
+    echo ""
+    
+    echo -e "  ${BOLD}WoL options:${NC}"
+    echo -e "  ${GREEN}1)${NC} ⚡ Wake single device"
+    echo -e "  ${GREEN}2)${NC} 📋 Wake from favorites"
+    echo -e "  ${GREEN}3)${NC} ➕ Add to favorites"
+    echo -e "  ${GREEN}4)${NC} 📝 List favorites"
+    echo -e "  ${GREEN}5)${NC} ➖ Remove from favorites"
+    echo -e "  ${GREEN}0)${NC} Back"
+    echo ""
+    read -r -p "  Select: " wol_choice
+    
+    case "$wol_choice" in
+        1)
+            echo ""
+            echo -e "  ${CYAN}MAC address (e.g., AA:BB:CC:DD:EE:FF):${NC}"
+            read -r mac_addr
+            if [[ -n "$mac_addr" ]]; then
+                echo ""
+                echo -e "  ${CYAN}Broadcast IP (default 255.255.255.255):${NC}"
+                read -r broadcast_ip
+                broadcast_ip="${broadcast_ip:-255.255.255.255}"
+                
+                print_progress "Sending magic packet to $mac_addr..."
+                python3 "$WOL_HELPER" --mac "$mac_addr" --broadcast "$broadcast_ip" 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        2)
+            echo ""
+            print_progress "Loading favorites..."
+            python3 "$WOL_HELPER" --list-favorites 2>&1 | sed 's/^/  /'
+            echo ""
+            echo -e "  ${CYAN}Device name to wake (or 'all'):${NC}"
+            read -r device_name
+            if [[ -n "$device_name" ]]; then
+                if [[ "$device_name" == "all" ]]; then
+                    print_progress "Waking all favorites..."
+                    python3 "$WOL_HELPER" --wake-all 2>&1 | sed 's/^/  /'
+                else
+                    print_progress "Waking $device_name..."
+                    python3 "$WOL_HELPER" --wake-favorite "$device_name" 2>&1 | sed 's/^/  /'
+                fi
+            fi
+            ;;
+        3)
+            echo ""
+            echo -e "  ${CYAN}Device name:${NC}"
+            read -r name
+            echo -e "  ${CYAN}MAC address:${NC}"
+            read -r mac
+            echo -e "  ${CYAN}Description (optional):${NC}"
+            read -r desc
+            if [[ -n "$name" && -n "$mac" ]]; then
+                python3 "$WOL_HELPER" --add-favorite "$name" "$mac" ${desc:+--description "$desc"} 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        4)
+            echo ""
+            print_header "WoL Favorites"
+            python3 "$WOL_HELPER" --list-favorites 2>&1 | sed 's/^/  /'
+            ;;
+        5)
+            echo ""
+            python3 "$WOL_HELPER" --list-favorites 2>&1 | sed 's/^/  /'
+            echo ""
+            echo -e "  ${CYAN}Device name to remove:${NC}"
+            read -r device_name
+            if [[ -n "$device_name" ]]; then
+                python3 "$WOL_HELPER" --remove-favorite "$device_name" 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        0|"") return ;;
+    esac
+    
+    press_enter
+}
+
+# X. Export Results (v1.1)
+run_export() {
+    if ! has_export; then
+        print_error "Export module not available"
+        echo -e "  ${DIM}Check helpers/export.py exists and Python 3 is installed${NC}"
+        press_enter
+        return 1
+    fi
+    
+    clear
+    print_header "Export Scan Results"
+    echo -e "  ${DIM}Export to CSV, HTML, JSON, or PDF formats${NC}"
+    echo ""
+    
+    # Check if we have scan data
+    local input_file=""
+    if [[ -n "$LAST_SCAN_FILE" ]] && [[ -f "$LAST_SCAN_FILE" ]]; then
+        input_file="$LAST_SCAN_FILE"
+        echo -e "  ${DIM}Using last scan: $LAST_SCAN_FILE${NC}"
+    else
+        # Look for recent scan files
+        local recent_file
+        recent_file=$(find "$OUTPUT_DIR" -name "*.json" -type f -mmin -60 2>/dev/null | head -1)
+        if [[ -n "$recent_file" ]]; then
+            input_file="$recent_file"
+            echo -e "  ${DIM}Using recent: $recent_file${NC}"
+        fi
+    fi
+    
+    if [[ -z "$input_file" ]]; then
+        print_warning "No scan results found"
+        echo -e "  ${DIM}Run a scan first, or provide a file path${NC}"
+        echo ""
+        echo -e "  ${CYAN}Enter scan results file path (or press Enter to cancel):${NC}"
+        read -r input_file
+        if [[ -z "$input_file" ]] || [[ ! -f "$input_file" ]]; then
+            return
+        fi
+    fi
+    
+    echo ""
+    echo -e "  ${BOLD}Export format:${NC}"
+    echo -e "  ${GREEN}1)${NC} 📊 CSV ${DIM}(spreadsheet compatible)${NC}"
+    echo -e "  ${GREEN}2)${NC} 🌐 HTML ${DIM}(styled web report)${NC}"
+    echo -e "  ${GREEN}3)${NC} 📄 JSON ${DIM}(structured data)${NC}"
+    echo -e "  ${GREEN}4)${NC} 📑 PDF ${DIM}(printable document)${NC}"
+    echo -e "  ${GREEN}5)${NC} 📦 All formats"
+    echo -e "  ${GREEN}0)${NC} Cancel"
+    echo ""
+    read -r -p "  Select: " export_choice
+    
+    local format outfile
+    case "$export_choice" in
+        1)
+            format="csv"
+            outfile=$(get_output_filename "export" "csv")
+            ;;
+        2)
+            format="html"
+            outfile=$(get_output_filename "export" "html")
+            ;;
+        3)
+            format="json"
+            outfile=$(get_output_filename "export" "json")
+            ;;
+        4)
+            format="pdf"
+            outfile=$(get_output_filename "export" "pdf")
+            ;;
+        5)
+            # Export all formats
+            echo ""
+            print_progress "Exporting to all formats..."
+            local base_name
+            base_name=$(get_output_filename "export" "")
+            base_name="${base_name%.*}"
+            
+            python3 "$EXPORT_HELPER" --input "$input_file" --format csv --output "${base_name}.csv" 2>&1 | sed 's/^/  /'
+            python3 "$EXPORT_HELPER" --input "$input_file" --format html --output "${base_name}.html" 2>&1 | sed 's/^/  /'
+            python3 "$EXPORT_HELPER" --input "$input_file" --format json --output "${base_name}.json" 2>&1 | sed 's/^/  /'
+            python3 "$EXPORT_HELPER" --input "$input_file" --format pdf --output "${base_name}.pdf" 2>&1 | sed 's/^/  /'
+            
+            echo ""
+            print_success "Exported to $OUTPUT_DIR"
+            press_enter
+            return
+            ;;
+        0|"") return ;;
+        *) return ;;
+    esac
+    
+    echo ""
+    print_progress "Exporting to $format..."
+    python3 "$EXPORT_HELPER" --input "$input_file" --format "$format" --output "$outfile" 2>&1 | sed 's/^/  /'
+    
+    if [[ -f "$outfile" ]]; then
+        echo ""
+        print_success "Exported to: $outfile"
+        
+        # Open if HTML or PDF
+        if [[ "$format" == "html" ]] || [[ "$format" == "pdf" ]]; then
+            echo -e "  ${CYAN}Open file? [Y/n]${NC}"
+            read -r open_confirm
+            [[ ! "$open_confirm" =~ ^[Nn]$ ]] && open "$outfile" 2>/dev/null
+        fi
+    fi
+    
+    press_enter
+}
+
+# J. Scheduled Scans (v1.1)
+run_scheduler() {
+    if ! has_scheduler; then
+        print_error "Scheduler not available"
+        echo -e "  ${DIM}Check helpers/scheduler.py exists and Python 3 is installed${NC}"
+        press_enter
+        return 1
+    fi
+    
+    clear
+    print_header "Scheduled Scans"
+    echo -e "  ${DIM}Automate scans with cron (Linux) or launchd (macOS)${NC}"
+    echo ""
+    
+    echo -e "  ${BOLD}Scheduler options:${NC}"
+    echo -e "  ${GREEN}1)${NC} 📋 List scheduled jobs"
+    echo -e "  ${GREEN}2)${NC} ➕ Create new scheduled scan"
+    echo -e "  ${GREEN}3)${NC} ▶️  Run job now"
+    echo -e "  ${GREEN}4)${NC} ⏸️  Enable/disable job"
+    echo -e "  ${GREEN}5)${NC} ❌ Remove job"
+    echo -e "  ${GREEN}6)${NC} 📊 Show job details"
+    echo -e "  ${GREEN}0)${NC} Back"
+    echo ""
+    read -r -p "  Select: " sched_choice
+    
+    case "$sched_choice" in
+        1)
+            echo ""
+            print_header "Scheduled Jobs"
+            python3 "$SCHEDULER_HELPER" --list 2>&1 | sed 's/^/  /'
+            ;;
+        2)
+            echo ""
+            echo -e "  ${CYAN}Job name (e.g., daily_scan):${NC}"
+            read -r job_name
+            if [[ -z "$job_name" ]]; then
+                return
+            fi
+            
+            echo ""
+            echo -e "  ${BOLD}Schedule:${NC}"
+            echo -e "  ${GREEN}1)${NC} Hourly"
+            echo -e "  ${GREEN}2)${NC} Daily (9 AM)"
+            echo -e "  ${GREEN}3)${NC} Nightly (2 AM)"
+            echo -e "  ${GREEN}4)${NC} Weekly (Monday 9 AM)"
+            echo -e "  ${GREEN}5)${NC} Monthly (1st of month)"
+            echo -e "  ${GREEN}6)${NC} Custom cron expression"
+            read -r -p "  Select: " sched_type
+            
+            local schedule
+            case "$sched_type" in
+                1) schedule="hourly" ;;
+                2) schedule="daily" ;;
+                3) schedule="nightly" ;;
+                4) schedule="weekly" ;;
+                5) schedule="monthly" ;;
+                6)
+                    echo -e "  ${CYAN}Cron expression (min hour day month weekday):${NC}"
+                    read -r schedule
+                    ;;
+                *) schedule="daily" ;;
+            esac
+            
+            echo ""
+            echo -e "  ${BOLD}Scan type:${NC}"
+            echo -e "  ${GREEN}1)${NC} Quick (ARP scan)"
+            echo -e "  ${GREEN}2)${NC} Full (with ports)"
+            read -r -p "  Select [1]: " scan_type_choice
+            local scan_type
+            case "$scan_type_choice" in
+                2) scan_type="full" ;;
+                *) scan_type="quick" ;;
+            esac
+            
+            echo ""
+            echo -e "  ${CYAN}Email for notifications (optional):${NC}"
+            read -r notify_email
+            
+            echo ""
+            print_progress "Creating scheduled job..."
+            python3 "$SCHEDULER_HELPER" --create "$job_name" \
+                --schedule "$schedule" \
+                --scan-type "$scan_type" \
+                ${notify_email:+--notify "$notify_email"} 2>&1 | sed 's/^/  /'
+            ;;
+        3)
+            echo ""
+            python3 "$SCHEDULER_HELPER" --list 2>&1 | sed 's/^/  /'
+            echo ""
+            echo -e "  ${CYAN}Job name to run:${NC}"
+            read -r job_name
+            if [[ -n "$job_name" ]]; then
+                print_progress "Running job: $job_name"
+                python3 "$SCHEDULER_HELPER" --run "$job_name" 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        4)
+            echo ""
+            python3 "$SCHEDULER_HELPER" --list 2>&1 | sed 's/^/  /'
+            echo ""
+            echo -e "  ${CYAN}Job name:${NC}"
+            read -r job_name
+            if [[ -n "$job_name" ]]; then
+                echo -e "  ${GREEN}1)${NC} Enable"
+                echo -e "  ${GREEN}2)${NC} Disable"
+                read -r -p "  Select: " enable_choice
+                if [[ "$enable_choice" == "1" ]]; then
+                    python3 "$SCHEDULER_HELPER" --enable "$job_name" 2>&1 | sed 's/^/  /'
+                else
+                    python3 "$SCHEDULER_HELPER" --disable "$job_name" 2>&1 | sed 's/^/  /'
+                fi
+            fi
+            ;;
+        5)
+            echo ""
+            python3 "$SCHEDULER_HELPER" --list 2>&1 | sed 's/^/  /'
+            echo ""
+            echo -e "  ${CYAN}Job name to remove:${NC}"
+            read -r job_name
+            if [[ -n "$job_name" ]]; then
+                echo -e "  ${YELLOW}⚠ This will remove the scheduled job.${NC}"
+                echo -e "  ${CYAN}Are you sure? [y/N]${NC}"
+                read -r confirm
+                if [[ "$confirm" =~ ^[Yy]$ ]]; then
+                    python3 "$SCHEDULER_HELPER" --remove "$job_name" 2>&1 | sed 's/^/  /'
+                fi
+            fi
+            ;;
+        6)
+            echo ""
+            echo -e "  ${CYAN}Job name:${NC}"
+            read -r job_name
+            if [[ -n "$job_name" ]]; then
+                python3 "$SCHEDULER_HELPER" --show "$job_name" 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        0|"") return ;;
+    esac
+    
+    press_enter
+}
+
+# Y. Network Topology (v1.1)
+run_topology() {
+    if ! has_topology; then
+        print_error "Topology mapper not available"
+        echo -e "  ${DIM}Check helpers/topology.py exists and Python 3 is installed${NC}"
+        press_enter
+        return 1
+    fi
+    
+    clear
+    print_header "Network Topology"
+    echo -e "  ${DIM}Visualize your network structure${NC}"
+    echo ""
+    
+    # Check for scan data
+    local input_file=""
+    if [[ -n "$LAST_SCAN_FILE" ]] && [[ -f "$LAST_SCAN_FILE" ]]; then
+        input_file="$LAST_SCAN_FILE"
+        echo -e "  ${DIM}Using last scan: $LAST_SCAN_FILE${NC}"
+    fi
+    
+    echo ""
+    echo -e "  ${BOLD}Output format:${NC}"
+    echo -e "  ${GREEN}1)${NC} 📟 ASCII art ${DIM}(terminal view)${NC}"
+    echo -e "  ${GREEN}2)${NC} 🌐 Interactive HTML ${DIM}(browser view)${NC}"
+    echo -e "  ${GREEN}3)${NC} 📊 DOT/Graphviz ${DIM}(for graphviz)${NC}"
+    echo -e "  ${GREEN}4)${NC} 📄 JSON ${DIM}(raw data)${NC}"
+    echo -e "  ${GREEN}5)${NC} 🔄 Scan & display ${DIM}(fresh scan)${NC}"
+    echo -e "  ${GREEN}0)${NC} Back"
+    echo ""
+    read -r -p "  Select: " topo_choice
+    
+    case "$topo_choice" in
+        1)
+            echo ""
+            if [[ -n "$input_file" ]]; then
+                python3 "$TOPOLOGY_HELPER" --input "$input_file" --ascii 2>&1 | sed 's/^/  /'
+            else
+                python3 "$TOPOLOGY_HELPER" --scan --ascii 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        2)
+            local outfile
+            outfile=$(get_output_filename "topology" "html")
+            echo ""
+            print_progress "Generating topology visualization..."
+            
+            if [[ -n "$input_file" ]]; then
+                python3 "$TOPOLOGY_HELPER" --input "$input_file" --html --output "$outfile" 2>&1 | sed 's/^/  /'
+            else
+                python3 "$TOPOLOGY_HELPER" --scan --html --output "$outfile" 2>&1 | sed 's/^/  /'
+            fi
+            
+            if [[ -f "$outfile" ]]; then
+                print_success "Topology saved: $outfile"
+                open "$outfile" 2>/dev/null
+            fi
+            ;;
+        3)
+            local outfile
+            outfile=$(get_output_filename "topology" "dot")
+            echo ""
+            
+            if [[ -n "$input_file" ]]; then
+                python3 "$TOPOLOGY_HELPER" --input "$input_file" --dot --output "$outfile" 2>&1 | sed 's/^/  /'
+            else
+                python3 "$TOPOLOGY_HELPER" --scan --dot --output "$outfile" 2>&1 | sed 's/^/  /'
+            fi
+            
+            if [[ -f "$outfile" ]]; then
+                print_success "DOT file saved: $outfile"
+                echo -e "  ${DIM}Render with: dot -Tpng $outfile -o topology.png${NC}"
+            fi
+            ;;
+        4)
+            local outfile
+            outfile=$(get_output_filename "topology" "json")
+            echo ""
+            
+            if [[ -n "$input_file" ]]; then
+                python3 "$TOPOLOGY_HELPER" --input "$input_file" --json --output "$outfile" 2>&1 | sed 's/^/  /'
+            else
+                python3 "$TOPOLOGY_HELPER" --scan --json --output "$outfile" 2>&1 | sed 's/^/  /'
+            fi
+            
+            if [[ -f "$outfile" ]]; then
+                print_success "JSON saved: $outfile"
+            fi
+            ;;
+        5)
+            echo ""
+            print_progress "Scanning network..."
+            python3 "$TOPOLOGY_HELPER" --scan --ascii 2>&1 | sed 's/^/  /'
+            ;;
+        0|"") return ;;
+    esac
+    
+    press_enter
+}
+
+# S. Security Audit (v1.1)
+run_security() {
+    if ! has_security; then
+        print_error "Security auditor not available"
+        echo -e "  ${DIM}Check helpers/security.py exists and Python 3 is installed${NC}"
+        press_enter
+        return 1
+    fi
+    
+    clear
+    print_header "Security Audit"
+    echo -e "  ${DIM}Scan for common vulnerabilities and security issues${NC}"
+    echo ""
+    
+    # Check for scan data
+    local input_file=""
+    if [[ -n "$LAST_SCAN_FILE" ]] && [[ -f "$LAST_SCAN_FILE" ]]; then
+        input_file="$LAST_SCAN_FILE"
+        echo -e "  ${DIM}Using last scan: $LAST_SCAN_FILE${NC}"
+    fi
+    
+    echo ""
+    echo -e "  ${BOLD}Audit options:${NC}"
+    echo -e "  ${GREEN}1)${NC} 🔍 Quick audit ${DIM}(scan from previous results)${NC}"
+    echo -e "  ${GREEN}2)${NC} 🔬 Full audit ${DIM}(fresh scan + audit)${NC}"
+    echo -e "  ${GREEN}3)${NC} 🎯 Audit single host"
+    echo -e "  ${GREEN}4)${NC} 📄 Generate HTML report"
+    echo -e "  ${GREEN}0)${NC} Back"
+    echo ""
+    read -r -p "  Select: " sec_choice
+    
+    case "$sec_choice" in
+        1)
+            echo ""
+            if [[ -n "$input_file" ]]; then
+                print_progress "Running security audit..."
+                python3 "$SECURITY_HELPER" --input "$input_file" 2>&1 | sed 's/^/  /'
+            else
+                print_warning "No scan data available. Running fresh scan..."
+                python3 "$SECURITY_HELPER" --scan 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        2)
+            echo ""
+            print_progress "Scanning network and auditing..."
+            echo -e "  ${DIM}This may take several minutes...${NC}"
+            python3 "$SECURITY_HELPER" --scan 2>&1 | sed 's/^/  /'
+            ;;
+        3)
+            echo ""
+            echo -e "  ${CYAN}Target IP address:${NC}"
+            read -r target_ip
+            if [[ -n "$target_ip" ]]; then
+                print_progress "Auditing $target_ip..."
+                python3 "$SECURITY_HELPER" --target "$target_ip" 2>&1 | sed 's/^/  /'
+            fi
+            ;;
+        4)
+            local outfile
+            outfile=$(get_output_filename "security_audit" "html")
+            echo ""
+            print_progress "Generating security report..."
+            
+            if [[ -n "$input_file" ]]; then
+                python3 "$SECURITY_HELPER" --input "$input_file" --html --output "$outfile" 2>&1 | sed 's/^/  /'
+            else
+                python3 "$SECURITY_HELPER" --scan --html --output "$outfile" 2>&1 | sed 's/^/  /'
+            fi
+            
+            if [[ -f "$outfile" ]]; then
+                print_success "Report saved: $outfile"
+                open "$outfile" 2>/dev/null
             fi
             ;;
         0|"") return ;;

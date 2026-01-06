@@ -499,6 +499,62 @@ def sound_alert(change: DeviceChange):
             os.system('afplay /System/Library/Sounds/Glass.aiff &')
 
 
+def desktop_notify(change: DeviceChange):
+    """Send desktop notification for alerts"""
+    device = change.device
+    if isinstance(device, dict):
+        ip = device.get('ip', 'unknown')
+        mac = device.get('mac', 'unknown')
+        vendor = device.get('vendor', 'Unknown device')
+    else:
+        ip = device.ip
+        mac = device.mac
+        vendor = device.vendor or 'Unknown device'
+    
+    titles = {
+        'new': '🚨 New Device Detected',
+        'returned': '📱 Device Returned',
+        'gone': '👋 Device Left',
+        'changed': '📝 Device Changed'
+    }
+    title = titles.get(change.change_type, 'Network Alert')
+    message = f"{vendor}\n{ip} ({mac})"
+    
+    try:
+        if sys.platform == 'darwin':  # macOS
+            script = f'display notification "{message}" with title "{title}" sound name "Glass"'
+            subprocess.run(['osascript', '-e', script], capture_output=True)
+        
+        elif sys.platform == 'win32':  # Windows
+            try:
+                from win10toast import ToastNotifier
+                toaster = ToastNotifier()
+                toaster.show_toast(title, message, duration=5, threaded=True)
+            except ImportError:
+                # Fallback to PowerShell
+                ps_script = f'''
+                Add-Type -AssemblyName System.Windows.Forms
+                $notify = New-Object System.Windows.Forms.NotifyIcon
+                $notify.Icon = [System.Drawing.SystemIcons]::Information
+                $notify.Visible = $true
+                $notify.ShowBalloonTip(5000, "{title}", "{message}", [System.Windows.Forms.ToolTipIcon]::Info)
+                '''
+                subprocess.run(['powershell', '-Command', ps_script], capture_output=True)
+        
+        else:  # Linux
+            subprocess.run([
+                'notify-send',
+                '-u', 'critical' if change.change_type == 'new' else 'normal',
+                '-a', 'NetScan',
+                '-i', 'network-wireless',
+                title,
+                message
+            ], capture_output=True)
+    
+    except Exception as e:
+        print(f"Desktop notification failed: {e}", file=sys.stderr)
+
+
 # =============================================================================
 # CLI Interface
 # =============================================================================
@@ -558,6 +614,8 @@ Examples:
                         help='Webhook URL for alerts')
     parser.add_argument('--sound', action='store_true',
                         help='Play sound for new devices')
+    parser.add_argument('--notify', '-n', action='store_true',
+                        help='Enable desktop notifications')
     parser.add_argument('--quiet', '-q', action='store_true',
                         help='Suppress console alerts')
     
@@ -681,6 +739,9 @@ Examples:
     
     if args.sound:
         monitor.add_callback(sound_alert)
+    
+    if args.notify:
+        monitor.add_callback(desktop_notify)
     
     # Handle Ctrl+C gracefully
     def signal_handler(sig, frame):
