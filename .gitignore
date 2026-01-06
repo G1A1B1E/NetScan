@@ -1,0 +1,60 @@
+# NetScan - Ignore patterns
+
+# Runtime data (consolidated under files/)
+files/logs/
+files/exports/
+files/output/
+cache/
+
+# Legacy paths (in case they exist)
+logs/
+exports/
+output/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+*.egg
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Archive (old versions)
+archive/
+
+# SQLite databases (vendor cache)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Test output
+test-results/
+coverage/
+
+# User config (if added later)
+.netscanrc
+config.local.sh

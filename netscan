@@ -1,0 +1,96 @@
+#!/bin/bash
+# ============================================================================
+# NetScan - Network Device Finder
+# ============================================================================
+# Interactive CLI tool for network device discovery and MAC vendor lookup
+# Supports multiple input formats: nmap XML, ARP table, CSV, JSON, plain text
+# ============================================================================
+
+# Get script directory (resolves symlinks)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Initialize temp file before sourcing modules
+TEMP_FILE=$(mktemp)
+
+# Source all library modules
+source "$SCRIPT_DIR/lib/config.sh"
+source "$SCRIPT_DIR/lib/logging.sh"
+source "$SCRIPT_DIR/lib/errors.sh"
+source "$SCRIPT_DIR/lib/ui.sh"
+source "$SCRIPT_DIR/lib/parsers.sh"
+source "$SCRIPT_DIR/lib/vendor.sh"
+source "$SCRIPT_DIR/lib/loader.sh"
+source "$SCRIPT_DIR/lib/search.sh"
+source "$SCRIPT_DIR/lib/export.sh"
+source "$SCRIPT_DIR/lib/scanner.sh"
+
+# Setup error handlers (trap for cleanup, interrupt, terminate)
+setup_error_handlers
+
+# ============================================================================
+# MAIN
+# ============================================================================
+
+# Log session start
+log_info "Session started"
+log_info "Log file: $LOG_FILE"
+
+# Check for command line argument
+if [ -n "$1" ]; then
+    if [ -f "$1" ]; then
+        INPUT_FILE="$1"
+        FILE_FORMAT=$(detect_file_format "$INPUT_FILE")
+        log_input "Command line file: $INPUT_FILE (format: $FILE_FORMAT)"
+        case "$FILE_FORMAT" in
+            "nmap-xml") parse_xml_file ;;
+            "arp-table") parse_arp_file ;;
+            "plain-text") parse_plain_text_file ;;
+            "csv") parse_csv_file ;;
+            "json") parse_json_file ;;
+        esac
+        count=$(wc -l < "$TEMP_FILE" | tr -d ' ')
+        log_input "Loaded $count devices from command line file"
+    fi
+fi
+
+# Main loop
+while true; do
+    show_banner
+    show_menu
+    
+    echo -e "${CYAN}  Select option:${NC}"
+    read -r -p "  > " choice
+    
+    log_action "Menu selection: $choice"
+    
+    case $choice in
+        1) load_file ;;
+        2) load_multiple_files ;;
+        3) list_all_devices ;;
+        4) search_devices ;;
+        5) search_by_vendor ;;
+        6) find_ip_by_hostname ;;
+        7) find_ip_by_mac ;;
+        8) show_summary ;;
+        9) export_to_csv ;;
+        s|S) handle_scan_menu ;;
+        e|E) load_examples ;;
+        r|R) refresh_vendors ;;
+        c|C) 
+            echo ""
+            print_capabilities 
+            press_enter
+            ;;
+        0|q|Q|exit)
+            log_info "Session ended by user"
+            echo ""
+            echo -e "  ${GREEN}Goodbye! 👋${NC}"
+            echo ""
+            exit 0
+            ;;
+        *)
+            print_error "Invalid option"
+            sleep 1
+            ;;
+    esac
+done

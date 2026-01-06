@@ -1,0 +1,46 @@
+{
+  "name": "netscan",
+  "version": "1.0.0",
+  "description": "Network Device Finder & MAC Vendor Lookup Tool",
+  "main": "netscan",
+  "scripts": {
+    "start": "./netscan",
+    "install": "./install.sh",
+    "install:local": "./install.sh --local",
+    "check": "./install.sh --check",
+    "uninstall": "./install.sh --uninstall",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "bin": {
+    "netscan": "./netscan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/netscan.git"
+  },
+  "keywords": [
+    "network",
+    "mac-address",
+    "vendor-lookup",
+    "nmap",
+    "arp",
+    "cli",
+    "bash",
+    "network-scanner",
+    "device-discovery"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/netscan/issues"
+  },
+  "homepage": "https://github.com/yourusername/netscan#readme",
+  "engines": {
+    "bash": ">=4.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "preferGlobal": true
+}

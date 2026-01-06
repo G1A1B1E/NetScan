@@ -1,0 +1,11 @@
+mac,ip,hostname
+AA:BB:CC:11:22:33,192.168.1.10,router
+00:1A:2B:3C:4D:5E,192.168.1.20,nas-server
+DC:A6:32:XX:YY:ZZ,192.168.1.30,raspberry-pi
+F0:18:98:AB:CD:EF,192.168.1.40,smart-tv
+88:66:5A:12:34:56,192.168.1.50,laptop-work
+3C:22:FB:78:90:AB,192.168.1.60,iphone-john
+A4:83:E7:CD:EF:01,192.168.1.70,macbook-pro
+00:50:56:AA:BB:CC,192.168.1.80,vmware-guest
+B8:27:EB:11:22:33,192.168.1.90,pi-hole
+48:2C:6A:44:55:66,192.168.1.100,gaming-pc
