@@ -1,0 +1,132 @@
+# Log all GitHub activity to a file
+name: Activity Logger
+
+on:
+  # Triggers on all major events
+  push:
+    branches: ["*"]
+  pull_request:
+    types: [opened, closed, merged, synchronize]
+  issues:
+    types: [opened, closed, reopened]
+  release:
+    types: [published, created]
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Custom log message'
+        required: false
+        default: 'Manual trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  log-activity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Log Activity
+        run: |
+          # Create logs directory if it doesn't exist
+          mkdir -p logs
+          
+          # Log file path
+          LOG_FILE="logs/activity.log"
+          
+          # Get timestamp
+          TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          
+          # Determine event type and details
+          EVENT="${{ github.event_name }}"
+          ACTOR="${{ github.actor }}"
+          REF="${{ github.ref }}"
+          SHA="${{ github.sha }}"
+          SHORT_SHA="${SHA:0:7}"
+          
+          # Build log entry based on event type
+          case "$EVENT" in
+            push)
+              COMMIT_MSG=$(git log -1 --pretty=format:'%s' 2>/dev/null || echo "No message")
+              FILES_CHANGED=$(git diff --name-only HEAD~1 2>/dev/null | wc -l | tr -d ' ')
+              LOG_ENTRY="[$TIMESTAMP] PUSH | $ACTOR | $REF | $SHORT_SHA | $FILES_CHANGED files | $COMMIT_MSG"
+              ;;
+            pull_request)
+              PR_ACTION="${{ github.event.action }}"
+              PR_TITLE="${{ github.event.pull_request.title }}"
+              PR_NUM="${{ github.event.pull_request.number }}"
+              LOG_ENTRY="[$TIMESTAMP] PR $PR_ACTION | $ACTOR | #$PR_NUM | $PR_TITLE"
+              ;;
+            issues)
+              ISSUE_ACTION="${{ github.event.action }}"
+              ISSUE_TITLE="${{ github.event.issue.title }}"
+              ISSUE_NUM="${{ github.event.issue.number }}"
+              LOG_ENTRY="[$TIMESTAMP] ISSUE $ISSUE_ACTION | $ACTOR | #$ISSUE_NUM | $ISSUE_TITLE"
+              ;;
+            release)
+              RELEASE_ACTION="${{ github.event.action }}"
+              RELEASE_TAG="${{ github.event.release.tag_name }}"
+              LOG_ENTRY="[$TIMESTAMP] RELEASE $RELEASE_ACTION | $ACTOR | $RELEASE_TAG"
+              ;;
+            workflow_dispatch)
+              CUSTOM_MSG="${{ github.event.inputs.message }}"
+              LOG_ENTRY="[$TIMESTAMP] MANUAL | $ACTOR | $CUSTOM_MSG"
+              ;;
+            *)
+              LOG_ENTRY="[$TIMESTAMP] $EVENT | $ACTOR | $REF"
+              ;;
+          esac
+          
+          # Append to log file
+          echo "$LOG_ENTRY" >> "$LOG_FILE"
+          
+          # Also create/update a JSON log for structured data
+          JSON_LOG="logs/activity.json"
+          
+          # Create JSON entry
+          JSON_ENTRY=$(cat <<EOF
+          {
+            "timestamp": "$TIMESTAMP",
+            "event": "$EVENT",
+            "actor": "$ACTOR",
+            "ref": "$REF",
+            "sha": "$SHORT_SHA",
+            "details": "$LOG_ENTRY"
+          }
+          EOF
+          )
+          
+          # Append to JSON array (create if doesn't exist)
+          if [ ! -f "$JSON_LOG" ]; then
+            echo "[]" > "$JSON_LOG"
+          fi
+          
+          # Use jq if available, otherwise simple append
+          if command -v jq &> /dev/null; then
+            jq --argjson entry "$JSON_ENTRY" '. += [$entry]' "$JSON_LOG" > tmp.json && mv tmp.json "$JSON_LOG"
+          fi
+          
+          # Show in workflow output
+          echo "📝 Logged: $LOG_ENTRY"
+          echo ""
+          echo "=== Recent Activity (last 20 entries) ==="
+          tail -20 "$LOG_FILE"
+
+      - name: Commit Log Update
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          git add logs/
+          
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "📝 Log activity: ${{ github.event_name }} by ${{ github.actor }}"
+            git push
+          fi
