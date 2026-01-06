@@ -18,20 +18,23 @@ readonly E_INVALID_FORMAT=8
 readonly E_CACHE_ERROR=9
 readonly E_USER_ABORT=130
 
-# Error messages
-declare -A ERROR_MESSAGES=(
-    [$E_SUCCESS]="Success"
-    [$E_GENERAL]="General error"
-    [$E_INVALID_ARG]="Invalid argument"
-    [$E_FILE_NOT_FOUND]="File not found"
-    [$E_PERMISSION_DENIED]="Permission denied"
-    [$E_DEPENDENCY_MISSING]="Required dependency missing"
-    [$E_NETWORK_ERROR]="Network error"
-    [$E_PARSE_ERROR]="Parse error"
-    [$E_INVALID_FORMAT]="Invalid file format"
-    [$E_CACHE_ERROR]="Cache error"
-    [$E_USER_ABORT]="User abort"
-)
+# Error messages (bash 3.2 compatible - no associative arrays)
+get_error_message() {
+    case "$1" in
+        0) echo "Success" ;;
+        1) echo "General error" ;;
+        2) echo "Invalid argument" ;;
+        3) echo "File not found" ;;
+        4) echo "Permission denied" ;;
+        5) echo "Required dependency missing" ;;
+        6) echo "Network error" ;;
+        7) echo "Parse error" ;;
+        8) echo "Invalid file format" ;;
+        9) echo "Cache error" ;;
+        130) echo "User abort" ;;
+        *) echo "Unknown error" ;;
+    esac
+}
 
 # Global error state
 LAST_ERROR=""
@@ -44,7 +47,7 @@ LAST_ERROR_CODE=0
 # Set error state
 set_error() {
     local code="${1:-$E_GENERAL}"
-    local message="${2:-${ERROR_MESSAGES[$code]:-Unknown error}}"
+    local message="${2:-$(get_error_message $code)}"
     LAST_ERROR_CODE=$code
     LAST_ERROR="$message"
     log_error "[$code] $message"
@@ -74,7 +77,7 @@ has_error() {
 # Die with error message
 die() {
     local code="${1:-$E_GENERAL}"
-    local message="${2:-${ERROR_MESSAGES[$code]:-Unknown error}}"
+    local message="${2:-$(get_error_message $code)}"
     echo -e "${RED}Fatal Error: $message${NC}" >&2
     log_error "FATAL: [$code] $message"
     exit "$code"

@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-01-06
+
+### Added
+- **Desktop GUI Application** (Electron)
+  - Beautiful modern interface with dark/light themes
+  - Real-time network scanning with live updates
+  - Device management with favorites and custom labels
+  - Network topology visualization
+  - Security dashboard with risk assessment
+  - Export to CSV, HTML, JSON, PDF formats
+  - Cross-platform: macOS (Intel + ARM) and Windows
+
+- **Professional Installers**
+  - macOS .pkg installer with component selection (GUI, CLI, or both)
+  - macOS .dmg disk images for drag-and-drop installation
+  - Windows NSIS installer with component selection
+  - Windows portable ZIP archive
+
+### Fixed
+- Bash 3.2 compatibility for macOS (removed bash 4+ features)
+- Config files now stored in `~/.netscan` for proper user permissions
+- CLI wrapper script installation issues
+
 ## [2.1.0] - 2026-01-06
 
 ### Added

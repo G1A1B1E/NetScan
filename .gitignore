@@ -58,3 +58,14 @@ coverage/
 # User config (if added later)
 .netscanrc
 config.local.sh
+
+# Release assets (large binaries)
+release-*/
+netscan-gui/dist/
+netscan-gui/node_modules/
+installer/output/
+installer/build/
+*.dmg
+*.pkg
+*.exe
+*.zip

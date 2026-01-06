@@ -1,0 +1,44 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#228be6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1c7ed6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="globe-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e9ecef;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bg-gradient)"/>
+  
+  <!-- Inner shadow -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="4"/>
+  
+  <!-- Globe/Network Icon -->
+  <g transform="translate(128, 128) scale(1.2)">
+    <path fill="url(#globe-gradient)" d="M106.67 21.33C56.53 21.33 16 61.87 16 112s40.53 90.67 90.67 90.67S197.33 162.13 197.33 112 156.8 21.33 106.67 21.33zm-8 161.87c-31.6-3.93-56-30.8-56-63.2 0-4.96.64-9.68 1.68-14.32L76 137.33v8c0 8.8 7.2 16 16 16v15.87zm55.2-20.33c-2.08-6.48-8-11.2-15.2-11.2h-8v-24c0-4.4-3.6-8-8-8H64v-16h16c4.4 0 8-3.6 8-8V80h16c8.8 0 16-7.2 16-16v-3.28c23.44 9.52 40 32.48 40 59.28 0 16.64-6.4 31.76-16.8 43.12z"/>
+  </g>
+  
+  <!-- Scanning circles -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+  <circle cx="256" cy="256" r="120" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+  <circle cx="256" cy="256" r="80" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+  
+  <!-- Connection dots -->
+  <circle cx="360" cy="180" r="12" fill="rgba(255,255,255,0.8)"/>
+  <circle cx="400" cy="280" r="8" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="340" cy="360" r="10" fill="rgba(255,255,255,0.7)"/>
+  <circle cx="160" cy="340" r="8" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="120" cy="240" r="10" fill="rgba(255,255,255,0.7)"/>
+  <circle cx="180" cy="140" r="8" fill="rgba(255,255,255,0.6)"/>
+  
+  <!-- Connection lines -->
+  <line x1="256" y1="256" x2="360" y2="180" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <line x1="256" y1="256" x2="400" y2="280" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <line x1="256" y1="256" x2="340" y2="360" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <line x1="256" y1="256" x2="160" y2="340" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <line x1="256" y1="256" x2="120" y2="240" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <line x1="256" y1="256" x2="180" y2="140" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+</svg>

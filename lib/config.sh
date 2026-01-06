@@ -32,12 +32,17 @@ if [ -z "$SCRIPT_DIR" ]; then
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 fi
 
-# File directories (consolidated under files/)
-FILES_DIR="$SCRIPT_DIR/files"
+# User data directory (writable) - use home directory
+NETSCAN_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/netscan"
+
+# File directories (use user home for writable dirs)
+FILES_DIR="$NETSCAN_DATA_DIR/files"
 LOGS_DIR="$FILES_DIR/logs"
 EXPORTS_DIR="$FILES_DIR/exports"
 OUTPUT_DIR="$FILES_DIR/output"
-CACHE_DIR="$SCRIPT_DIR/cache"
+CACHE_DIR="$NETSCAN_DATA_DIR/cache"
+
+# Library and helpers stay with installation
 LIB_DIR="$SCRIPT_DIR/lib"
 HELPERS_DIR="$SCRIPT_DIR/helpers"
 
