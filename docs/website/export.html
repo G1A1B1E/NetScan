@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export & Reports - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>v2.1 Features</h3><ul>
+                <li><a href="fingerprinting.html">Device Fingerprinting</a></li><li><a href="topology.html">Network Topology</a></li><li><a href="security.html">Security Audit</a></li><li><a href="scheduler.html">Scheduled Scans</a></li><li><a href="wol.html">Wake-on-LAN</a></li><li><a href="export.html" class="active">Export & Reports</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>📊 Export & Reports</h1>
+            <p class="lead">Export scan results to CSV, HTML, JSON, and PDF formats for documentation and sharing.</p>
+
+            <div class="info-box">
+                <strong>New in v2.1.0:</strong> Multi-format export with styled HTML reports, PDF generation, and automatic timestamping.
+            </div>
+
+            <h2>Quick Start</h2>
+            <p>Access export from the interactive menu:</p>
+            <pre><code class="language-bash">netscan
+# Press 'x' for Export Scans</code></pre>
+
+            <h2>Supported Formats</h2>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Format</th><th>Extension</th><th>Best For</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>CSV</strong></td><td>.csv</td><td>Spreadsheet analysis, data import</td></tr>
+                    <tr><td><strong>HTML</strong></td><td>.html</td><td>Web viewing, email reports</td></tr>
+                    <tr><td><strong>JSON</strong></td><td>.json</td><td>API integration, programmatic use</td></tr>
+                    <tr><td><strong>PDF</strong></td><td>.pdf</td><td>Professional reports, archival</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Basic Export</h2>
+            <pre><code class="language-bash"># Export to CSV
+python3 helpers/export.py --format csv --input scan_results.json --output report.csv
+
+# Export to HTML
+python3 helpers/export.py --format html --input scan_results.json --output report.html
+
+# Export to JSON (formatted)
+python3 helpers/export.py --format json --input scan_results.json --output report.json
+
+# Export to PDF (requires wkhtmltopdf)
+python3 helpers/export.py --format pdf --input scan_results.json --output report.pdf</code></pre>
+
+            <h2>Export Options</h2>
+            <pre><code class="language-bash"># Auto-generate filename with timestamp
+python3 helpers/export.py --format html --input scan.json --auto-name
+# Output: netscan_report_20260106_143022.html
+
+# Include additional metadata
+python3 helpers/export.py --format html --input scan.json \
+    --title "Network Audit Report" \
+    --company "Acme Corp"
+
+# Export multiple scans to single report
+python3 helpers/export.py --format html \
+    --input scan1.json scan2.json scan3.json \
+    --output combined_report.html
+
+# Filter by device type
+python3 helpers/export.py --format csv --input scan.json \
+    --filter-type router,server</code></pre>
+
+            <h2>CSV Export</h2>
+            <p>Produces a clean spreadsheet-compatible format:</p>
+            <pre><code class="language-text">IP Address,MAC Address,Hostname,Vendor,Device Type,First Seen,Last Seen
+192.168.1.1,00:11:22:33:44:55,router.local,Cisco Systems,Router,2026-01-01 10:00:00,2026-01-06 14:30:22
+192.168.1.50,AA:BB:CC:DD:EE:FF,desktop-pc,Dell Inc.,Workstation,2026-01-02 08:15:00,2026-01-06 14:30:22
+192.168.1.100,11:22:33:44:55:66,server.local,HP Inc.,Server,2026-01-01 10:00:00,2026-01-06 14:30:22</code></pre>
+
+            <h2>HTML Report</h2>
+            <p>Generates a styled, interactive HTML report:</p>
+            <pre><code class="language-bash"># Basic HTML report
+python3 helpers/export.py --format html --input scan.json --output report.html
+
+# HTML with all options
+python3 helpers/export.py --format html --input scan.json \
+    --output report.html \
+    --title "Weekly Network Report" \
+    --company "Acme Corp" \
+    --logo logo.png \
+    --include-charts \
+    --include-timeline</code></pre>
+
+            <h3>HTML Report Features</h3>
+            <ul>
+                <li>Responsive design for all screen sizes</li>
+                <li>Sortable and filterable device tables</li>
+                <li>Interactive charts (vendor distribution, device types)</li>
+                <li>Timeline visualization of network changes</li>
+                <li>Dark/light mode toggle</li>
+                <li>Print-optimized styles</li>
+            </ul>
+
+            <h2>PDF Reports</h2>
+            <div class="warning-box">
+                <strong>Requirement:</strong> PDF export requires <code>wkhtmltopdf</code> to be installed.
+            </div>
+            <pre><code class="language-bash"># Install wkhtmltopdf
+# macOS
+brew install wkhtmltopdf
+
+# Ubuntu/Debian
+sudo apt-get install wkhtmltopdf
+
+# Generate PDF
+python3 helpers/export.py --format pdf --input scan.json --output report.pdf
+
+# PDF options
+python3 helpers/export.py --format pdf --input scan.json \
+    --output report.pdf \
+    --page-size A4 \
+    --orientation landscape \
+    --margin 20</code></pre>
+
+            <h2>JSON Export</h2>
+            <p>Formatted JSON with full device details:</p>
+            <pre><code class="language-json">{
+  "report": {
+    "generated": "2026-01-06T14:30:22Z",
+    "tool": "NetScan v2.1.0",
+    "network": "192.168.1.0/24"
+  },
+  "summary": {
+    "total_devices": 25,
+    "by_type": {
+      "router": 1,
+      "server": 3,
+      "workstation": 12,
+      "mobile": 6,
+      "iot": 3
+    }
+  },
+  "devices": [
+    {
+      "ip": "192.168.1.1",
+      "mac": "00:11:22:33:44:55",
+      "hostname": "router.local",
+      "vendor": "Cisco Systems",
+      "type": "router",
+      "ports": [22, 80, 443],
+      "first_seen": "2026-01-01T10:00:00Z",
+      "last_seen": "2026-01-06T14:30:22Z"
+    }
+  ]
+}</code></pre>
+
+            <h2>CLI Options Reference</h2>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Option</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>--format FORMAT</code></td><td>Output format: csv, html, json, pdf</td></tr>
+                    <tr><td><code>--input FILE</code></td><td>Input scan file(s)</td></tr>
+                    <tr><td><code>--output FILE</code></td><td>Output filename</td></tr>
+                    <tr><td><code>--auto-name</code></td><td>Auto-generate timestamped filename</td></tr>
+                    <tr><td><code>--title TEXT</code></td><td>Report title</td></tr>
+                    <tr><td><code>--company TEXT</code></td><td>Company name for header</td></tr>
+                    <tr><td><code>--logo FILE</code></td><td>Logo image for HTML/PDF</td></tr>
+                    <tr><td><code>--include-charts</code></td><td>Add charts to HTML report</td></tr>
+                    <tr><td><code>--include-timeline</code></td><td>Add timeline to HTML report</td></tr>
+                    <tr><td><code>--filter-type TYPES</code></td><td>Filter by device types</td></tr>
+                    <tr><td><code>--page-size SIZE</code></td><td>PDF page size (A4, Letter)</td></tr>
+                    <tr><td><code>--orientation DIR</code></td><td>PDF orientation (portrait, landscape)</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Python API</h2>
+            <pre><code class="language-python">from helpers.export import Exporter, ReportConfig
+
+# Create exporter
+exporter = Exporter()
+
+# Load scan data
+data = exporter.load("scan_results.json")
+
+# Export to different formats
+exporter.to_csv(data, "report.csv")
+exporter.to_html(data, "report.html")
+exporter.to_json(data, "report.json")
+exporter.to_pdf(data, "report.pdf")
+
+# With configuration
+config = ReportConfig(
+    title="Network Audit",
+    company="Acme Corp",
+    include_charts=True,
+    include_timeline=True
+)
+
+exporter.to_html(data, "report.html", config=config)</code></pre>
+
+            <h2>Integration Examples</h2>
+            <pre><code class="language-bash"># Scan and export in one command
+netscan --scan 192.168.1.0/24 --export html --output report.html
+
+# Schedule weekly PDF reports
+python3 helpers/scheduler.py --create weekly_report \
+    --schedule weekly \
+    --format pdf \
+    --notify admin@company.com
+
+# Export for different teams
+python3 helpers/export.py --format html --input scan.json \
+    --filter-type server --output servers_report.html
+
+python3 helpers/export.py --format csv --input scan.json \
+    --filter-type workstation --output workstations.csv</code></pre>
+
+            <div class="tip-box">
+                <strong>💡 Tip:</strong> Use HTML format for sharing reports via email - they include all styling inline and look great in any browser.
+            </div>
+
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

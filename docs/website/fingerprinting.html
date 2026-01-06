@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Fingerprinting - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>v2.1 Features</h3><ul>
+                <li><a href="fingerprinting.html" class="active">Device Fingerprinting</a></li><li><a href="topology.html">Network Topology</a></li><li><a href="security.html">Security Audit</a></li><li><a href="scheduler.html">Scheduled Scans</a></li><li><a href="wol.html">Wake-on-LAN</a></li><li><a href="export.html">Export & Reports</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>🔬 Device Fingerprinting</h1>
+            <p class="lead">Automatically identify device types on your network using MAC vendor analysis, open ports, and TTL signatures.</p>
+
+            <div class="info-box">
+                <strong>New in v2.1.0:</strong> Device fingerprinting provides smart classification of network devices without manual identification.
+            </div>
+
+            <h2>Quick Start</h2>
+            <p>Access fingerprinting from the interactive menu:</p>
+            <pre><code class="language-bash">netscan
+# Press 'f' for Device Fingerprinting</code></pre>
+
+            <h2>How It Works</h2>
+            <p>Device fingerprinting combines multiple data points to identify devices:</p>
+            <ul>
+                <li><strong>MAC Vendor</strong> — Manufacturer identification (Apple, Cisco, etc.)</li>
+                <li><strong>Open Ports</strong> — Service signatures (SSH, HTTP, DNS, etc.)</li>
+                <li><strong>TTL Analysis</strong> — Operating system family detection</li>
+                <li><strong>Port Patterns</strong> — Device-specific port combinations</li>
+            </ul>
+
+            <h2>Device Types Detected</h2>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Type</th><th>Detection Method</th><th>Examples</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>🌐 Router/Gateway</td><td>Ports 53, 67, 80, 443</td><td>Home routers, access points</td></tr>
+                    <tr><td>📱 Mobile Phone</td><td>MAC vendor + limited ports</td><td>iPhone, Android devices</td></tr>
+                    <tr><td>💻 Computer</td><td>SSH, RDP, file sharing</td><td>Laptops, desktops, servers</td></tr>
+                    <tr><td>🖨️ Printer</td><td>Port 9100, 515, 631</td><td>Network printers, MFPs</td></tr>
+                    <tr><td>📹 Camera</td><td>RTSP (554), vendor MAC</td><td>IP cameras, NVRs</td></tr>
+                    <tr><td>📺 Smart TV</td><td>Vendor + streaming ports</td><td>Samsung, LG, Roku</td></tr>
+                    <tr><td>🏠 IoT Device</td><td>Limited ports + vendor</td><td>Smart home, sensors</td></tr>
+                    <tr><td>🔀 Switch</td><td>SNMP (161), limited web</td><td>Managed switches</td></tr>
+                </tbody>
+            </table>
+
+            <h2>CLI Usage</h2>
+            <pre><code class="language-bash"># Fingerprint single device
+python3 helpers/fingerprint.py --target 192.168.1.1 --verbose
+
+# Scan and fingerprint entire network
+python3 helpers/fingerprint.py --scan-network --verbose
+
+# Fingerprint from existing scan
+python3 helpers/fingerprint.py --input scan_results.json
+
+# Export fingerprints
+python3 helpers/fingerprint.py --scan-network --output fingerprints.json</code></pre>
+
+            <h2>Sample Output</h2>
+            <pre><code class="language-text">============================================================
+IP: 192.168.1.1
+MAC: A4:91:B1:XX:XX:XX
+Device Type: router
+Subtype: wireless_ap
+OS Family: Linux
+Manufacturer: TP-Link
+TTL: 64
+Open Ports: 22, 53, 80, 443
+Services: ssh, dns, http, https
+Confidence: 92%
+============================================================</code></pre>
+
+            <h2>Confidence Scoring</h2>
+            <p>Each identification includes a confidence score:</p>
+            <ul>
+                <li><strong>90-100%</strong> — High confidence, multiple indicators match</li>
+                <li><strong>70-89%</strong> — Good confidence, most indicators match</li>
+                <li><strong>50-69%</strong> — Moderate confidence, some indicators</li>
+                <li><strong>&lt;50%</strong> — Low confidence, limited data</li>
+            </ul>
+
+            <h2>Python API</h2>
+            <pre><code class="language-python">from helpers.fingerprint import DeviceFingerprinter
+
+# Create fingerprinter
+fp = DeviceFingerprinter(timeout=2.0, max_threads=20)
+
+# Fingerprint single device
+result = fp.fingerprint(
+    ip="192.168.1.1",
+    mac="AA:BB:CC:DD:EE:FF",
+    vendor="Apple, Inc."
+)
+
+print(f"Device Type: {result.device_type}")
+print(f"Confidence: {result.confidence:.0%}")
+print(f"Open Ports: {result.open_ports}")</code></pre>
+
+            <h2>Batch Processing</h2>
+            <pre><code class="language-bash"># Process scan results
+python3 helpers/fingerprint.py --input devices.json --output fingerprints.json
+
+# Skip port scanning (faster, less accurate)
+python3 helpers/fingerprint.py --input devices.json --no-ports</code></pre>
+
+            <div class="tip-box">
+                <strong>💡 Tip:</strong> Fingerprinting works best when combined with a port scan. Use the full network scan option for most accurate results.
+            </div>
+
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

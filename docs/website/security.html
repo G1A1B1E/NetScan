@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Audit - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>v2.1 Features</h3><ul>
+                <li><a href="fingerprinting.html">Device Fingerprinting</a></li><li><a href="topology.html">Network Topology</a></li><li><a href="security.html" class="active">Security Audit</a></li><li><a href="scheduler.html">Scheduled Scans</a></li><li><a href="wol.html">Wake-on-LAN</a></li><li><a href="export.html">Export & Reports</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>🔒 Security Audit</h1>
+            <p class="lead">Scan your network for common vulnerabilities, risky open ports, and security misconfigurations.</p>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> Only scan networks you own or have explicit permission to test. Unauthorized scanning may violate laws and policies.
+            </div>
+
+            <h2>Quick Start</h2>
+            <p>Access security auditing from the interactive menu:</p>
+            <pre><code class="language-bash">netscan
+# Press 's' for Security Audit</code></pre>
+
+            <h2>What's Checked</h2>
+
+            <h3>🚨 Risky Open Ports</h3>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Port</th><th>Service</th><th>Risk Level</th><th>Why</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>21</td><td>FTP</td><td style="color:#f57c00">High</td><td>Cleartext transmission</td></tr>
+                    <tr><td>23</td><td>Telnet</td><td style="color:#d32f2f">Critical</td><td>No encryption</td></tr>
+                    <tr><td>445</td><td>SMB</td><td style="color:#d32f2f">Critical</td><td>Ransomware target</td></tr>
+                    <tr><td>3389</td><td>RDP</td><td style="color:#f57c00">High</td><td>Brute force attacks</td></tr>
+                    <tr><td>3306</td><td>MySQL</td><td style="color:#f57c00">High</td><td>Database exposure</td></tr>
+                    <tr><td>6379</td><td>Redis</td><td style="color:#d32f2f">Critical</td><td>Often no auth</td></tr>
+                    <tr><td>27017</td><td>MongoDB</td><td style="color:#d32f2f">Critical</td><td>Often no auth</td></tr>
+                </tbody>
+            </table>
+
+            <h3>🔐 SSL/TLS Checks</h3>
+            <ul>
+                <li>Certificate expiration</li>
+                <li>Self-signed certificates</li>
+                <li>Weak cipher suites</li>
+            </ul>
+
+            <h3>🌐 HTTP Security Headers</h3>
+            <ul>
+                <li>X-Frame-Options</li>
+                <li>X-Content-Type-Options</li>
+                <li>Strict-Transport-Security (HSTS)</li>
+                <li>Content-Security-Policy</li>
+                <li>X-XSS-Protection</li>
+            </ul>
+
+            <h2>Risk Levels</h2>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Level</th><th>Icon</th><th>Action Required</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td style="color:#d32f2f;font-weight:bold">Critical</td><td>🔴</td><td>Immediate attention required</td></tr>
+                    <tr><td style="color:#f57c00;font-weight:bold">High</td><td>🟠</td><td>Address within 24-48 hours</td></tr>
+                    <tr><td style="color:#fbc02d;font-weight:bold">Medium</td><td>🟡</td><td>Plan remediation this week</td></tr>
+                    <tr><td style="color:#1976d2;font-weight:bold">Low</td><td>🔵</td><td>Consider for future improvement</td></tr>
+                    <tr><td style="color:#757575;font-weight:bold">Info</td><td>⚪</td><td>Informational only</td></tr>
+                </tbody>
+            </table>
+
+            <h2>CLI Usage</h2>
+            <pre><code class="language-bash"># Scan and audit network
+python3 helpers/security.py --scan
+
+# Audit single host
+python3 helpers/security.py --target 192.168.1.1
+
+# From existing scan results
+python3 helpers/security.py --input scan.json
+
+# Generate HTML report
+python3 helpers/security.py --scan --html --output security_report.html
+
+# JSON output
+python3 helpers/security.py --scan --json --output security.json</code></pre>
+
+            <h2>Sample Report</h2>
+            <pre><code class="language-text">======================================================================
+  NETWORK SECURITY AUDIT REPORT
+======================================================================
+
+  Scan Time: 2026-01-06 14:30:00
+  Hosts Scanned: 12
+
+----------------------------------------------------------------------
+  RISK SUMMARY
+----------------------------------------------------------------------
+  🔴 CRITICAL: 2
+  🟠 HIGH: 5
+  🟡 MEDIUM: 3
+  🔵 LOW: 1
+
+----------------------------------------------------------------------
+  🔴 CRITICAL FINDINGS (2)
+----------------------------------------------------------------------
+
+  [192.168.1.50:23] Telnet Service Open (23)
+    Telnet transmits data in cleartext. Use SSH instead.
+    → Replace Telnet with SSH for secure remote access.
+
+  [192.168.1.100:6379] Redis Service Open (6379)
+    Redis often has no authentication.
+    → Enable Redis AUTH and bind to localhost only.
+
+----------------------------------------------------------------------
+  RECOMMENDATIONS
+----------------------------------------------------------------------
+  • ⚠️ CRITICAL: Address critical findings immediately!
+  • 🔒 Replace insecure protocols (Telnet, FTP) with encrypted alternatives.
+  • 🗄️ Database services should not be exposed to the network.
+
+======================================================================</code></pre>
+
+            <h2>HTML Reports</h2>
+            <p>Generate beautiful, shareable HTML security reports:</p>
+            <pre><code class="language-bash">python3 helpers/security.py --scan --html --output audit.html</code></pre>
+            <p>Features:</p>
+            <ul>
+                <li>📊 Visual risk summary cards</li>
+                <li>🎨 Color-coded severity indicators</li>
+                <li>📋 Actionable recommendations</li>
+                <li>📱 Mobile-responsive design</li>
+                <li>🖨️ Print-friendly layout</li>
+            </ul>
+
+            <h2>Python API</h2>
+            <pre><code class="language-python">from helpers.security import SecurityAuditor
+
+# Create auditor
+auditor = SecurityAuditor(timeout=5.0, threads=20)
+
+# Audit single host
+findings = auditor.audit_host("192.168.1.1")
+for f in findings:
+    print(f"[{f.severity}] {f.title}")
+    print(f"  {f.description}")
+
+# Audit network from device list
+devices = [{"ip": "192.168.1.1"}, {"ip": "192.168.1.10"}]
+report = auditor.audit_network(devices)
+
+# Generate outputs
+text_report = auditor.render_text()
+html_report = auditor.render_html()
+
+# Access report data
+print(f"Critical: {report.risk_summary['critical']}")
+print(f"Total findings: {len(report.findings)}")</code></pre>
+
+            <h2>Scheduling Security Audits</h2>
+            <p>Combine with scheduled scans for ongoing security monitoring:</p>
+            <pre><code class="language-bash"># Create weekly security audit job
+python3 helpers/scheduler.py --create weekly_audit \
+    --schedule weekly \
+    --scan-type full \
+    --notify security@company.com</code></pre>
+
+            <div class="tip-box">
+                <strong>💡 Best Practice:</strong> Run security audits after any network changes (new devices, firewall updates) and on a regular schedule (weekly/monthly).
+            </div>
+
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

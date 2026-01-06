@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Topology - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>v2.1 Features</h3><ul>
+                <li><a href="fingerprinting.html">Device Fingerprinting</a></li><li><a href="topology.html" class="active">Network Topology</a></li><li><a href="security.html">Security Audit</a></li><li><a href="scheduler.html">Scheduled Scans</a></li><li><a href="wol.html">Wake-on-LAN</a></li><li><a href="export.html">Export & Reports</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>🗺️ Network Topology</h1>
+            <p class="lead">Visualize your network structure as ASCII art, interactive HTML diagrams, or DOT/Graphviz exports.</p>
+
+            <div class="info-box">
+                <strong>New in v2.1.0:</strong> Network topology mapping provides visual understanding of your network layout.
+            </div>
+
+            <h2>Quick Start</h2>
+            <p>Access topology mapping from the interactive menu:</p>
+            <pre><code class="language-bash">netscan
+# Press 'y' for Network Topology</code></pre>
+
+            <h2>Output Formats</h2>
+
+            <h3>ASCII Art (Terminal)</h3>
+            <pre><code class="language-bash">python3 helpers/topology.py --scan --ascii</code></pre>
+            <pre><code class="language-text">======================================================================
+  NETWORK TOPOLOGY
+======================================================================
+
+                        ☁️  INTERNET
+                            │
+                            │
+                    ┌───────┴───────┐
+                    │   🌐 GATEWAY  │
+                    │ 192.168.1.1   │
+                    │ A4:91:B1:XX:XX│
+                    └───────┬───────┘
+                            │
+        ────────────────────┼────────────────────
+                      LOCAL NETWORK
+
+  📡 ROUTERS/APs:
+    ├── 192.168.1.2       TP-Link Access Point
+
+  💻 HOSTS:
+    ├── 192.168.1.10      Apple, Inc.
+    ├── 192.168.1.15      Dell Inc.
+    ├── 192.168.1.20      Samsung Electronics
+    └── 192.168.1.25      Unknown
+
+======================================================================
+  Total devices: 5 | Gateway: 192.168.1.1
+======================================================================</code></pre>
+
+            <h3>Interactive HTML</h3>
+            <pre><code class="language-bash">python3 helpers/topology.py --scan --html --output topology.html</code></pre>
+            <p>Creates an interactive diagram using vis.js that you can:</p>
+            <ul>
+                <li>🖱️ Drag nodes to rearrange</li>
+                <li>🔍 Zoom in/out with scroll</li>
+                <li>ℹ️ Hover for device details</li>
+                <li>📱 Responsive for mobile viewing</li>
+            </ul>
+
+            <h3>DOT/Graphviz</h3>
+            <pre><code class="language-bash"># Generate DOT file
+python3 helpers/topology.py --scan --dot --output network.dot
+
+# Render with Graphviz
+dot -Tpng network.dot -o network.png
+dot -Tsvg network.dot -o network.svg
+dot -Tpdf network.dot -o network.pdf</code></pre>
+
+            <h3>JSON Export</h3>
+            <pre><code class="language-bash">python3 helpers/topology.py --scan --json --output topology.json</code></pre>
+
+            <h2>CLI Reference</h2>
+            <pre><code class="language-bash"># From existing scan results
+python3 helpers/topology.py --input scan.json --ascii
+
+# Fresh network scan
+python3 helpers/topology.py --scan --html --output map.html
+
+# All options
+python3 helpers/topology.py \
+    --input scan.json \    # Use existing scan data
+    --scan \               # Or perform fresh scan
+    --ascii \              # ASCII art output
+    --dot \                # DOT/Graphviz output
+    --html \               # Interactive HTML
+    --json \               # JSON structure
+    --output FILE          # Save to file</code></pre>
+
+            <h2>Node Types & Colors</h2>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Type</th><th>Color</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Gateway</td><td style="background:#4caf50;color:white;padding:2px 8px;border-radius:4px">Green</td><td>Default gateway/router</td></tr>
+                    <tr><td>Router/AP</td><td style="background:#ff9800;color:white;padding:2px 8px;border-radius:4px">Orange</td><td>Additional routers, access points</td></tr>
+                    <tr><td>Switch</td><td style="background:#9c27b0;color:white;padding:2px 8px;border-radius:4px">Purple</td><td>Network switches</td></tr>
+                    <tr><td>Host</td><td style="background:#03a9f4;color:white;padding:2px 8px;border-radius:4px">Blue</td><td>Computers, phones, devices</td></tr>
+                    <tr><td>Unknown</td><td style="background:#9e9e9e;color:white;padding:2px 8px;border-radius:4px">Gray</td><td>Unidentified devices</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Python API</h2>
+            <pre><code class="language-python">from helpers.topology import TopologyMapper
+
+# Create mapper
+mapper = TopologyMapper()
+
+# Build from device list
+devices = [
+    {"ip": "192.168.1.1", "mac": "AA:BB:CC:DD:EE:FF", "vendor": "Cisco"},
+    {"ip": "192.168.1.10", "mac": "11:22:33:44:55:66", "vendor": "Apple"},
+]
+
+topology = mapper.build_topology(devices)
+
+# Render outputs
+ascii_art = mapper.render_ascii()
+html = mapper.render_html()
+dot = mapper.render_dot()
+
+# Access topology data
+print(f"Gateway: {topology.gateway.ip}")
+print(f"Nodes: {len(topology.nodes)}")</code></pre>
+
+            <div class="tip-box">
+                <strong>💡 Tip:</strong> For best results, run a full network scan first to get MAC addresses and vendor information, then generate the topology from those results.
+            </div>
+
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

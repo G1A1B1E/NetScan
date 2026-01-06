@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wake-on-LAN - NetScan Documentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+</head>
+<body>
+    <header class="top-nav"><div class="nav-container">
+        <a href="index.html" class="logo"><span class="logo-icon">⌘</span><span class="logo-text">NetScan</span></a>
+        <nav class="nav-links">
+            <a href="index.html">Docs</a><a href="installation.html">Installation</a><a href="usage.html">Usage</a><a href="api.html">API</a>
+            <a href="https://github.com/G1A1B1E/NetScan" target="_blank" class="github-link">GitHub</a>
+        </nav>
+    </div></header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><div class="sidebar-content"><nav class="sidebar-nav">
+            <div class="nav-section"><h3>Getting Started</h3><ul>
+                <li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick Start</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Core Features</h3><ul>
+                <li><a href="usage.html">Basic Usage</a></li><li><a href="mac-lookup.html">MAC Lookup</a></li><li><a href="network-scanning.html">Network Scanning</a></li><li><a href="monitoring.html">Monitoring</a></li><li><a href="web-interface.html">Web Interface</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>v2.1 Features</h3><ul>
+                <li><a href="fingerprinting.html">Device Fingerprinting</a></li><li><a href="topology.html">Network Topology</a></li><li><a href="security.html">Security Audit</a></li><li><a href="scheduler.html">Scheduled Scans</a></li><li><a href="wol.html" class="active">Wake-on-LAN</a></li><li><a href="export.html">Export & Reports</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Advanced</h3><ul>
+                <li><a href="configuration.html">Configuration</a></li><li><a href="api.html">Python API</a></li><li><a href="performance.html">Performance</a></li><li><a href="docker.html">Docker</a></li>
+            </ul></div>
+            <div class="nav-section"><h3>Reference</h3><ul>
+                <li><a href="cli-reference.html">CLI Reference</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="contributing.html">Contributing</a></li>
+            </ul></div>
+        </nav></div></aside>
+        <main class="content"><article class="doc-content">
+            <h1>📡 Wake-on-LAN</h1>
+            <p class="lead">Remotely power on devices across your network using magic packets.</p>
+
+            <div class="info-box">
+                <strong>New in v2.1.0:</strong> Wake-on-LAN with favorites management, batch wake, and status verification.
+            </div>
+
+            <h2>Quick Start</h2>
+            <p>Access Wake-on-LAN from the interactive menu:</p>
+            <pre><code class="language-bash">netscan
+# Press 'z' for Wake-on-LAN</code></pre>
+
+            <h2>What is Wake-on-LAN?</h2>
+            <p>Wake-on-LAN (WoL) sends a special "magic packet" to a device's network interface, triggering it to power on from sleep or shutdown state. Requirements:</p>
+            <ul>
+                <li>Target device must support WoL in BIOS/UEFI</li>
+                <li>WoL must be enabled in BIOS/UEFI settings</li>
+                <li>Device must be connected via Ethernet (WiFi WoL is rare)</li>
+                <li>You need the device's MAC address</li>
+            </ul>
+
+            <h2>Basic Usage</h2>
+            <pre><code class="language-bash"># Wake a device by MAC address
+python3 helpers/wol.py --mac 00:11:22:33:44:55
+
+# Multiple MAC address formats supported
+python3 helpers/wol.py --mac 00-11-22-33-44-55
+python3 helpers/wol.py --mac 001122334455
+python3 helpers/wol.py --mac 00:11:22:33:44:55
+
+# Wake with custom broadcast address
+python3 helpers/wol.py --mac 00:11:22:33:44:55 --broadcast 192.168.1.255
+
+# Wake with SecureOn password
+python3 helpers/wol.py --mac 00:11:22:33:44:55 --password MyPassword</code></pre>
+
+            <h2>Favorites Management</h2>
+            <p>Save frequently used devices for quick access:</p>
+            <pre><code class="language-bash"># Add a device to favorites
+python3 helpers/wol.py --add-favorite "Office PC" --mac 00:11:22:33:44:55
+
+# Add with optional IP (for status checking)
+python3 helpers/wol.py --add-favorite "Server" --mac AA:BB:CC:DD:EE:FF --ip 192.168.1.100
+
+# List all favorites
+python3 helpers/wol.py --list-favorites
+
+# Wake by favorite name
+python3 helpers/wol.py --wake "Office PC"
+
+# Remove from favorites
+python3 helpers/wol.py --remove-favorite "Office PC"</code></pre>
+
+            <h2>Batch Operations</h2>
+            <pre><code class="language-bash"># Wake all favorites
+python3 helpers/wol.py --wake-all
+
+# Wake multiple specific devices
+python3 helpers/wol.py --wake "Office PC" "Server" "NAS"
+
+# Wake with delay between packets
+python3 helpers/wol.py --wake-all --delay 2</code></pre>
+
+            <h2>Status Verification</h2>
+            <pre><code class="language-bash"># Check if device woke up (requires IP in favorites)
+python3 helpers/wol.py --wake "Server" --verify
+
+# Check status of all favorites
+python3 helpers/wol.py --status
+
+# Custom verification timeout
+python3 helpers/wol.py --wake "Server" --verify --timeout 120</code></pre>
+
+            <h2>Sample Output</h2>
+            <pre><code class="language-text">$ python3 helpers/wol.py --list-favorites
+
+Wake-on-LAN Favorites
+=====================
+
+Name            MAC Address          IP Address       Status
+------------------------------------------------------------
+Office PC       00:11:22:33:44:55    192.168.1.50     Offline
+Server          AA:BB:CC:DD:EE:FF    192.168.1.100    Online
+NAS             11:22:33:44:55:66    192.168.1.200    Offline
+Media PC        22:33:44:55:66:77    -                Unknown
+
+$ python3 helpers/wol.py --wake "Server" --verify
+
+🔌 Sending magic packet to Server (AA:BB:CC:DD:EE:FF)...
+⏳ Waiting for device to wake up...
+✅ Server is now online (192.168.1.100)</code></pre>
+
+            <h2>CLI Options</h2>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Option</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>--mac MAC</code></td><td>MAC address to wake</td></tr>
+                    <tr><td><code>--broadcast IP</code></td><td>Broadcast address (default: 255.255.255.255)</td></tr>
+                    <tr><td><code>--port PORT</code></td><td>UDP port (default: 9)</td></tr>
+                    <tr><td><code>--password PASS</code></td><td>SecureOn password if required</td></tr>
+                    <tr><td><code>--add-favorite NAME</code></td><td>Add device to favorites</td></tr>
+                    <tr><td><code>--remove-favorite NAME</code></td><td>Remove from favorites</td></tr>
+                    <tr><td><code>--list-favorites</code></td><td>Show all saved favorites</td></tr>
+                    <tr><td><code>--wake NAME</code></td><td>Wake favorite by name</td></tr>
+                    <tr><td><code>--wake-all</code></td><td>Wake all favorites</td></tr>
+                    <tr><td><code>--verify</code></td><td>Verify device woke up</td></tr>
+                    <tr><td><code>--status</code></td><td>Show status of all favorites</td></tr>
+                    <tr><td><code>--delay SECS</code></td><td>Delay between packets</td></tr>
+                    <tr><td><code>--timeout SECS</code></td><td>Verification timeout</td></tr>
+                </tbody>
+            </table>
+
+            <h2>Python API</h2>
+            <pre><code class="language-python">from helpers.wol import WakeOnLAN, FavoritesManager
+
+# Send magic packet directly
+wol = WakeOnLAN()
+wol.wake("00:11:22:33:44:55")
+
+# With options
+wol.wake(
+    mac="00:11:22:33:44:55",
+    broadcast="192.168.1.255",
+    port=9,
+    password="secret"
+)
+
+# Manage favorites
+favs = FavoritesManager()
+favs.add("Server", "AA:BB:CC:DD:EE:FF", ip="192.168.1.100")
+favs.wake("Server", verify=True)
+
+# Wake all
+for device in favs.list():
+    wol.wake(device.mac)
+    print(f"Woke {device.name}")</code></pre>
+
+            <h2>Troubleshooting</h2>
+
+            <h3>Device won't wake</h3>
+            <ul>
+                <li>Verify WoL is enabled in BIOS/UEFI</li>
+                <li>Check network adapter settings in OS</li>
+                <li>Ensure device is on wired Ethernet</li>
+                <li>Verify MAC address is correct</li>
+                <li>Try different broadcast addresses</li>
+            </ul>
+
+            <h3>WoL across subnets</h3>
+            <p>By default, WoL works within the same subnet. For cross-subnet wake:</p>
+            <pre><code class="language-bash"># Use directed broadcast to specific subnet
+python3 helpers/wol.py --mac 00:11:22:33:44:55 --broadcast 192.168.2.255
+
+# Or use unicast with known IP (if ARP entry exists)
+python3 helpers/wol.py --mac 00:11:22:33:44:55 --broadcast 192.168.2.100</code></pre>
+
+            <div class="tip-box">
+                <strong>💡 Tip:</strong> Some routers have WoL forwarding features that can relay magic packets to other subnets.
+            </div>
+
+        </article></main>
+    </div>
+    <script src="js/prism.js"></script>
+</body>
+</html>

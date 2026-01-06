@@ -71,6 +71,18 @@
                     </div>
 
                     <div class="nav-section">
+                        <h3>v2.1 Features</h3>
+                        <ul>
+                            <li><a href="fingerprinting.html">Device Fingerprinting</a></li>
+                            <li><a href="topology.html">Network Topology</a></li>
+                            <li><a href="security.html">Security Audit</a></li>
+                            <li><a href="scheduler.html">Scheduled Scans</a></li>
+                            <li><a href="wol.html">Wake-on-LAN</a></li>
+                            <li><a href="export.html">Export & Reports</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-section">
                         <h3>Advanced</h3>
                         <ul>
                             <li><a href="configuration.html">Configuration</a></li>
@@ -98,6 +110,42 @@
             <article class="doc-content">
                 <h1>Changelog</h1>
                 <p class="lead">All notable changes to NetScan are documented here. We follow <a href="https://semver.org/" target="_blank">Semantic Versioning</a>.</p>
+
+                <!-- v2.1.0 -->
+                <section id="v2.1.0" class="changelog-entry">
+                    <h2>
+                        <span class="version-badge latest">v2.1.0</span>
+                        <span class="version-date">2025-01-06</span>
+                    </h2>
+                    <p class="version-summary">Network Intelligence Suite - Device fingerprinting, topology visualization, security auditing, and automation.</p>
+
+                    <h3>✨ Added</h3>
+                    <ul>
+                        <li><strong>Device Fingerprinting</strong> (<code>fingerprint.py</code>) — Intelligent device type detection using MAC vendor, open ports, and TTL analysis. Classifies routers, phones, laptops, IoT devices, printers, and cameras with confidence scoring.</li>
+                        <li><strong>Network Topology</strong> (<code>topology.py</code>) — Visualize your network structure with ASCII art, interactive HTML (vis.js), or DOT format for Graphviz integration.</li>
+                        <li><strong>Security Audit</strong> (<code>security.py</code>) — Comprehensive vulnerability assessment with 50+ risky port signatures, SSL/TLS verification, HTTP security headers analysis, and risk scoring (1-10).</li>
+                        <li><strong>Wake-on-LAN</strong> (<code>wol.py</code>) — Remote device power management with magic packets. Supports favorites, batch wake, multiple MAC formats, and SecureOn passwords.</li>
+                        <li><strong>Scheduled Scanning</strong> (<code>scheduler.py</code>) — Automated scans with native cron (Linux) or launchd (macOS) integration. Predefined schedules and email notifications.</li>
+                        <li><strong>Export Reports</strong> (<code>export.py</code>) — Multi-format export to CSV, styled HTML, JSON, and PDF. Includes charts, timelines, and custom branding.</li>
+                        <li><strong>Desktop Notifications</strong> — Enhanced monitor.py with OS-native alerts for new devices and security events.</li>
+                    </ul>
+
+                    <h3>🔄 Changed</h3>
+                    <ul>
+                        <li><strong>Interactive Menu</strong> — Added 6 new options: (f)ingerprint, (z) Wake-on-LAN, (j) scheduler, (y) topology, (s) security audit, e(x)port</li>
+                        <li><strong>Documentation</strong> — Complete website refresh with v2.1 features section and 6 new documentation pages</li>
+                    </ul>
+
+                    <h3>📦 New Python Modules</h3>
+                    <ul>
+                        <li><code>helpers/fingerprint.py</code> — Device fingerprinting engine</li>
+                        <li><code>helpers/topology.py</code> — Network visualization generator</li>
+                        <li><code>helpers/security.py</code> — Security audit scanner</li>
+                        <li><code>helpers/wol.py</code> — Wake-on-LAN manager</li>
+                        <li><code>helpers/scheduler.py</code> — Scheduled job manager</li>
+                        <li><code>helpers/export.py</code> — Multi-format exporter</li>
+                    </ul>
+                </section>
 
                 <!-- v2.0.0 -->
                 <section id="v2.0.0" class="changelog-entry">
