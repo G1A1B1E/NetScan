@@ -1,201 +1,400 @@
-# NetScan 🔍
+# NetScan# NetScan 🔍
 
-> Network Device Finder & MAC Vendor Lookup Tool
 
-A powerful, interactive CLI tool for network device discovery and MAC address vendor identification. Supports multiple input formats with fast parsing and intelligent caching.
 
-![Bash](https://img.shields.io/badge/Bash-4.0%2B-green)
-![Python](https://img.shields.io/badge/Python-3.6%2B-blue)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+> Network Intelligence Suite - CLI and Desktop GUI for Network Discovery> Network Device Finder & MAC Vendor Lookup Tool
 
-## Features
 
-- 📂 **Multi-format Support** - Load nmap XML, ARP tables, CSV, JSON, or plain text
+
+A powerful network device discovery and MAC address vendor identification tool. Available as both an interactive CLI and a modern desktop GUI application.A powerful, interactive CLI tool for network device discovery and MAC address vendor identification. Supports multiple input formats with fast parsing and intelligent caching.
+
+
+
+![Version](https://img.shields.io/badge/Version-3.0.0-blue)![Bash](https://img.shields.io/badge/Bash-4.0%2B-green)
+
+![Bash](https://img.shields.io/badge/Bash-3.2%2B-green)![Python](https://img.shields.io/badge/Python-3.6%2B-blue)
+
+![Python](https://img.shields.io/badge/Python-3.6%2B-blue)![License](https://img.shields.io/badge/License-MIT-yellow)
+
+![Electron](https://img.shields.io/badge/Electron-28-9feaf9)
+
+![License](https://img.shields.io/badge/License-MIT-yellow)## Features
+
+
+
+## Downloads- 📂 **Multi-format Support** - Load nmap XML, ARP tables, CSV, JSON, or plain text
+
 - 🔎 **Smart Search** - Search by hostname, IP, MAC address, or vendor
-- 🏭 **Vendor Lookup** - Automatic MAC-to-vendor resolution via macvendors.com API
+
+### Desktop GUI Application- 🏭 **Vendor Lookup** - Automatic MAC-to-vendor resolution via macvendors.com API
+
 - 📡 **Network Scanning** - Built-in scanning with nmap, arp-scan, ping sweep
-- ⚡ **Async Scanning** - Python-powered concurrent network discovery
-- �️ **Real-time Monitoring** - Watch for new devices, alerts on unknown MACs
-- 📊 **Report Generation** - PDF/HTML reports with vendor charts
-- 🌐 **Web Interface** - Browser-based dashboard and REST API
-- 💾 **Export Options** - Export results to CSV, JSON, HTML, or Markdown
-- 🗄️ **Intelligent Caching** - SQLite-backed vendor cache (30-day expiry)
-- ⚙️ **Configuration** - Custom OUI definitions, exclude lists, network profiles
+
+| Platform | Download | Description |- ⚡ **Async Scanning** - Python-powered concurrent network discovery
+
+|----------|----------|-------------|- �️ **Real-time Monitoring** - Watch for new devices, alerts on unknown MACs
+
+| macOS (Intel) | [NetScan-3.0.0.dmg](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-3.0.0.dmg) | Drag-and-drop installer |- 📊 **Report Generation** - PDF/HTML reports with vendor charts
+
+| macOS (Apple Silicon) | [NetScan-3.0.0-arm64.dmg](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-3.0.0-arm64.dmg) | For M1/M2/M3 Macs |- 🌐 **Web Interface** - Browser-based dashboard and REST API
+
+| macOS (Full Installer) | [NetScan-3.0.0-Installer.pkg](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-3.0.0-Installer.pkg) | GUI + CLI with options |- 💾 **Export Options** - Export results to CSV, JSON, HTML, or Markdown
+
+| Windows | [NetScan-3.0.0-Setup.exe](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-3.0.0-Setup.exe) | Windows installer |- 🗄️ **Intelligent Caching** - SQLite-backed vendor cache (30-day expiry)
+
+| Windows (Portable) | [NetScan-3.0.0-Windows.zip](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-3.0.0-Windows.zip) | No installation required |- ⚙️ **Configuration** - Custom OUI definitions, exclude lists, network profiles
+
 - 📝 **Session Logging** - All actions logged for auditing
+
+### CLI Only
 
 ## Installation
 
-### Quick Install
+| Platform | Download |
 
-```bash
+|----------|----------|### Quick Install
+
+| macOS | [NetScan-CLI-3.0.0.pkg](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-CLI-3.0.0.pkg) |
+
+| Any (script) | `curl -fsSL https://raw.githubusercontent.com/G1A1B1E/NetScan/main/install.sh \| bash` |```bash
+
 git clone https://github.com/yourusername/netscan.git
-cd netscan
+
+## Featurescd netscan
+
 ./install.sh
-```
 
-### Install Options
+### Desktop GUI```
 
-```bash
-./install.sh              # Install to /usr/local/bin (may need sudo)
-./install.sh --local      # Install to ~/.local/bin
+- Modern interface with dark/light themes
+
+- Real-time network scanning with live updates### Install Options
+
+- Device management with favorites and custom labels
+
+- Network topology visualization```bash
+
+- Security dashboard with risk assessment./install.sh              # Install to /usr/local/bin (may need sudo)
+
+- Export to CSV, HTML, JSON, PDF formats./install.sh --local      # Install to ~/.local/bin
+
 ./install.sh --check      # Check dependencies only
-./install.sh --uninstall  # Remove installation
-```
 
-### Dependencies
+### CLI Tool./install.sh --uninstall  # Remove installation
 
-**Required:**
-- Bash 4.0+
-- curl
+- Multi-format support - Load nmap XML, ARP tables, CSV, JSON, or plain text```
 
-**Optional (recommended):**
-- Python 3.6+ (enables caching, fast parsing, advanced features)
+- Smart search - Search by hostname, IP, MAC address, or vendor
+
+- Vendor lookup - Automatic MAC-to-vendor resolution### Dependencies
+
+- Network scanning - Built-in scanning with nmap, arp-scan, ping sweep
+
+- Async scanning - Python-powered concurrent network discovery**Required:**
+
+- Real-time monitoring - Watch for new devices- Bash 4.0+
+
+- Report generation - PDF/HTML reports with vendor charts- curl
+
+- Web interface - Browser-based dashboard and REST API
+
+- Export options - Export results to CSV, JSON, HTML, or Markdown**Optional (recommended):**
+
+- Intelligent caching - SQLite-backed vendor cache (30-day expiry)- Python 3.6+ (enables caching, fast parsing, advanced features)
+
 - jq (enhanced JSON parsing)
-- nmap (network scanning)
+
+## Quick Start- nmap (network scanning)
+
 - reportlab & matplotlib (PDF reports and charts)
 
-```bash
-# Install optional Python packages for reports/charts
-pip3 install reportlab matplotlib
-```
-
-## Usage
-
-### Interactive Mode
+### GUI Application
 
 ```bash
+
+1. Download the installer for your platform from the [Releases](https://github.com/G1A1B1E/NetScan/releases) page# Install optional Python packages for reports/charts
+
+2. Install and launch NetScanpip3 install reportlab matplotlib
+
+3. Click "Quick Scan" to discover devices on your network```
+
+
+
+### CLI Installation## Usage
+
+
+
+```bash### Interactive Mode
+
+# One-line install
+
+curl -fsSL https://raw.githubusercontent.com/G1A1B1E/NetScan/main/install.sh | bash```bash
+
 netscan
-```
 
-### Load File on Startup
+# Or clone and install```
 
-```bash
+git clone https://github.com/G1A1B1E/NetScan.git
+
+cd NetScan### Load File on Startup
+
+./install.sh
+
+``````bash
+
 netscan path/to/file.xml
-```
 
-### Menu Options
+### CLI Usage```
 
-| Option | Description |
+
+
+```bash### Menu Options
+
+# Interactive mode
+
+netscan| Option | Description |
+
 |--------|-------------|
-| 1 | Load a single file |
-| 2 | Load multiple files |
-| 3 | List all loaded devices |
+
+# Load a file on startup| 1 | Load a single file |
+
+netscan path/to/scan.xml| 2 | Load multiple files |
+
+```| 3 | List all loaded devices |
+
 | 4 | Search devices by any field |
-| 5 | Search by vendor name |
+
+## CLI Menu Options| 5 | Search by vendor name |
+
 | 6 | Find IP by hostname |
+
+| Option | Description || 7 | Find IP by MAC address |
+
+|--------|-------------|| 8 | Show network summary |
+
+| 1 | Load a single file || 9 | Export to CSV |
+
+| 2 | Load multiple files || s | **Network scanning** (12+ scan types) |
+
+| 3 | List all loaded devices || e | Load example files |
+
+| 4 | Search devices by any field || r | Refresh vendor data |
+
+| 5 | Search by vendor name || c | Show system capabilities |
+
+| 6 | Find IP by hostname || 0 | Exit |
+
 | 7 | Find IP by MAC address |
-| 8 | Show network summary |
+
+| 8 | Show network summary |### Scanning Menu
+
 | 9 | Export to CSV |
-| s | **Network scanning** (12+ scan types) |
-| e | Load example files |
-| r | Refresh vendor data |
-| c | Show system capabilities |
-| 0 | Exit |
 
-### Scanning Menu
+| s | Network scanning (12+ scan types) || Option | Description |
 
-| Option | Description |
-|--------|-------------|
-| 1 | ARP cache (instant) |
-| 2 | Ping sweep (ICMP) |
-| p | **Python async scan** (fast, concurrent) |
+| e | Load example files ||--------|-------------|
+
+| r | Refresh vendor data || 1 | ARP cache (instant) |
+
+| c | Show system capabilities || 2 | Ping sweep (ICMP) |
+
+| 0 | Exit || p | **Python async scan** (fast, concurrent) |
+
 | 3-9 | Nmap scans (discovery, ports, services, OS, vuln) |
-| m | MAC discovery (nmap) |
+
+## Supported Input Formats| m | MAC discovery (nmap) |
+
 | a | ARP-scan (layer 2) |
-| w | **Real-time monitor** (watch for new devices) |
-| t | **Generate report** (PDF/HTML) |
-| g | **Configuration** (preferences, custom OUIs) |
-| b | **Web interface** (browser dashboard) |
 
-## Supported Input Formats
+### Nmap XML| w | **Real-time monitor** (watch for new devices) |
 
-### Nmap XML
+```bash| t | **Generate report** (PDF/HTML) |
+
+nmap -sn 192.168.1.0/24 -oX scan.xml| g | **Configuration** (preferences, custom OUIs) |
+
+```| b | **Web interface** (browser dashboard) |
+
+
+
+### ARP Table## Supported Input Formats
+
 ```bash
+
+arp -a > arp.txt### Nmap XML
+
+``````bash
+
 nmap -sn 192.168.1.0/24 -oX scan.xml
-```
 
-### ARP Table
-```bash
-arp -a > arp.txt
-```
+### CSV```
 
-### CSV
 ```csv
-mac,ip,hostname
-AA:BB:CC:DD:EE:FF,192.168.1.100,device1
+
+mac,ip,hostname### ARP Table
+
+AA:BB:CC:DD:EE:FF,192.168.1.100,device1```bash
+
+```arp -a > arp.txt
+
 ```
 
 ### JSON
-```json
-[
-  {"mac": "AA:BB:CC:DD:EE:FF", "ip": "192.168.1.100", "hostname": "device1"}
-]
-```
 
-### Plain Text
-```
-AA:BB:CC:DD:EE:FF
-BB-CC-DD-EE-FF-00
+```json### CSV
+
+[```csv
+
+  {"mac": "AA:BB:CC:DD:EE:FF", "ip": "192.168.1.100", "hostname": "device1"}mac,ip,hostname
+
+]AA:BB:CC:DD:EE:FF,192.168.1.100,device1
+
+``````
+
+
+
+### Plain Text (MAC addresses)### JSON
+
+``````json
+
+AA:BB:CC:DD:EE:FF[
+
+BB-CC-DD-EE-FF-00  {"mac": "AA:BB:CC:DD:EE:FF", "ip": "192.168.1.100", "hostname": "device1"}
+
+```]
+
 ```
 
 ## Project Structure
 
-```
-netscan/
-├── netscan              # Main entry point
-├── install.sh           # Installation script
-├── README.md            # This file
-├── LICENSE              # MIT License
-├── CHANGELOG.md         # Version history
-├── package.json         # Package metadata
-│
+### Plain Text
+
+``````
+
+NetScan/AA:BB:CC:DD:EE:FF
+
+├── netscan              # Main CLI entry pointBB-CC-DD-EE-FF-00
+
+├── install.sh           # CLI installation script```
+
 ├── lib/                 # Bash modules
-│   ├── config.sh        # Colors, globals, directories
-│   ├── errors.sh        # Error handling & validation
+
+├── helpers/             # Python acceleration modules## Project Structure
+
+├── netscan-gui/         # Electron desktop application
+
+├── installer/           # Installer build scripts```
+
+├── docs/                # Documentationnetscan/
+
+│   └── website/         # GitHub Pages documentation├── netscan              # Main entry point
+
+├── example/             # Sample input files├── install.sh           # Installation script
+
+└── cache/               # Vendor cache (gitignored)├── README.md            # This file
+
+```├── LICENSE              # MIT License
+
+├── CHANGELOG.md         # Version history
+
+## Dependencies├── package.json         # Package metadata
+
+│
+
+### Required├── lib/                 # Bash modules
+
+- Bash 3.2+│   ├── config.sh        # Colors, globals, directories
+
+- curl│   ├── errors.sh        # Error handling & validation
+
 │   ├── logging.sh       # Session logging
-│   ├── ui.sh            # Banner, menus, display helpers
-│   ├── parsers.sh       # Format detection & parsing
-│   ├── vendor.sh        # MAC vendor lookup
-│   ├── loader.sh        # File loading functions
+
+### Optional (Recommended)│   ├── ui.sh            # Banner, menus, display helpers
+
+- Python 3.6+ (enables caching, fast parsing, advanced features)│   ├── parsers.sh       # Format detection & parsing
+
+- jq (enhanced JSON parsing)│   ├── vendor.sh        # MAC vendor lookup
+
+- nmap (network scanning)│   ├── loader.sh        # File loading functions
+
 │   ├── search.sh        # Search & display functions
-│   ├── export.sh        # CSV/JSON export
-│   └── scanner.sh       # Network scanning (outline)
-│
-├── helpers/             # Python acceleration
+
+### For PDF Reports│   ├── export.sh        # CSV/JSON export
+
+```bash│   └── scanner.sh       # Network scanning (outline)
+
+pip3 install reportlab matplotlib│
+
+```├── helpers/             # Python acceleration
+
 │   ├── vendor_cache.py  # SQLite vendor caching
-│   ├── fast_parser.py   # High-performance parsing
+
+## Documentation│   ├── fast_parser.py   # High-performance parsing
+
 │   ├── mac_normalizer.py # MAC address formatting
-│   ├── network_helper.py # IP/CIDR operations
+
+Full documentation is available at: https://g1a1b1e.github.io/NetScan/│   ├── network_helper.py # IP/CIDR operations
+
 │   ├── export_helper.py # Multi-format export
-│   ├── async_scanner.py # Concurrent network scanning
-│   ├── monitor.py       # Real-time device monitoring
-│   ├── report_generator.py # PDF/HTML reports
-│   ├── config_manager.py # Configuration management
-│   └── web_server.py    # Web interface & REST API
+
+- [Installation Guide](https://g1a1b1e.github.io/NetScan/installation.html)│   ├── async_scanner.py # Concurrent network scanning
+
+- [Quick Start](https://g1a1b1e.github.io/NetScan/quickstart.html)│   ├── monitor.py       # Real-time device monitoring
+
+- [CLI Reference](https://g1a1b1e.github.io/NetScan/cli-reference.html)│   ├── report_generator.py # PDF/HTML reports
+
+- [Network Scanning](https://g1a1b1e.github.io/NetScan/network-scanning.html)│   ├── config_manager.py # Configuration management
+
+- [API Reference](https://g1a1b1e.github.io/NetScan/api.html)│   └── web_server.py    # Web interface & REST API
+
 │
-├── docs/                # Documentation
+
+## Docker Support├── docs/                # Documentation
+
 │   ├── ARCHITECTURE.md  # Technical architecture
-│   ├── CONTRIBUTING.md  # Contribution guidelines
-│   └── SCANNING.md      # Scanning commands reference
-│
+
+```bash│   ├── CONTRIBUTING.md  # Contribution guidelines
+
+# Build and run with Docker Compose│   └── SCANNING.md      # Scanning commands reference
+
+docker-compose up -d│
+
 ├── example/             # Sample input files
-│   ├── arp.txt          # Sample ARP output
-│   ├── scan.xml         # Sample nmap XML
-│   ├── devices.csv      # Sample CSV
-│   ├── network.json     # Sample JSON
+
+# Or use the helper script│   ├── arp.txt          # Sample ARP output
+
+./docker.sh build│   ├── scan.xml         # Sample nmap XML
+
+./docker.sh start│   ├── devices.csv      # Sample CSV
+
+```│   ├── network.json     # Sample JSON
+
 │   └── macs.txt         # Sample plain text MACs
-│
+
+See [Docker Documentation](docs/DOCKER.md) for more details.│
+
 ├── files/               # Runtime data (gitignored)
-│   ├── exports/         # Exported CSV/JSON files
+
+## Contributing│   ├── exports/         # Exported CSV/JSON files
+
 │   ├── logs/            # Session logs
-│   └── output/          # Scan output files
+
+Contributions are welcome! Please see [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.│   └── output/          # Scan output files
+
 │
-└── cache/               # Vendor cache (gitignored)
+
+## License└── cache/               # Vendor cache (gitignored)
+
 ```
+
+MIT License - see [LICENSE](LICENSE) for details.
 
 ## Configuration
 
+## Changelog
+
 ### Environment Variables
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 | Variable | Description | Default |
 |----------|-------------|---------|

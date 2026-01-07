@@ -2,28 +2,35 @@
 
 A modern, cross-platform desktop application for network scanning and device discovery.
 
-![NetScan GUI](assets/screenshot.png)
-
 ## Features
 
-- 🔍 **Network Scanning** - Discover all devices on your network
-- 📊 **Dashboard** - Visual overview of your network status
-- 🗺️ **Topology View** - Network map visualization
-- 🔒 **Security Audit** - Check for vulnerabilities
-- 👁️ **Real-time Monitoring** - Watch for new devices
-- 🔎 **MAC Lookup** - Identify device manufacturers
-- ⚡ **Wake-on-LAN** - Wake sleeping devices
-- 🌙 **Dark/Light Themes** - Beautiful UI in any mode
+- Network Scanning - Discover all devices on your network
+- Dashboard - Visual overview of your network status
+- Topology View - Network map visualization
+- Security Audit - Check for vulnerabilities
+- Real-time Monitoring - Watch for new devices
+- MAC Lookup - Identify device manufacturers
+- Wake-on-LAN - Wake sleeping devices
+- Dark/Light Themes - Beautiful UI in any mode
 
-## Installation
+## Downloads
 
-### Pre-built Installers
+| Platform | Download |
+|----------|----------|
+| macOS (Intel) | [NetScan-3.0.0.dmg](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-3.0.0.dmg) |
+| macOS (Apple Silicon) | [NetScan-3.0.0-arm64.dmg](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-3.0.0-arm64.dmg) |
+| Windows | [NetScan-3.0.0-Setup.exe](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-3.0.0-Setup.exe) |
+| Windows (Portable) | [NetScan-3.0.0-Windows.zip](https://github.com/G1A1B1E/NetScan/releases/download/v3.0.0/NetScan-3.0.0-Windows.zip) |
 
-Download the latest release for your platform:
-- **macOS**: `NetScan-x.x.x.dmg`
-- **Windows**: `NetScan-Setup-x.x.x.exe`
+## Build from Source
 
-### Build from Source
+### Prerequisites
+
+- Node.js 18+
+- npm 9+
+- Python 3.6+ (for backend features)
+
+### Development
 
 ```bash
 # Clone the repository
@@ -36,19 +43,27 @@ npm install
 # Run in development mode
 npm start
 
-# Build for production
-npm run dist
+# Run with DevTools open
+npm run dev
 ```
 
-## Requirements
+### Build Installers
 
-### Runtime
-- Node.js 18+ (for development)
-- Python 3.6+ with required modules
+```bash
+# Build for current platform
+npm run build
 
-### Development
-- npm 9+
-- electron-builder (included in devDependencies)
+# Build for macOS
+npm run build:mac
+
+# Build for Windows
+npm run build:win
+
+# Build for Linux
+npm run build:linux
+```
+
+Built installers will be in the `dist/` directory.
 
 ## Project Structure
 
@@ -58,13 +73,13 @@ netscan-gui/
 ├── preload.js           # IPC bridge (security)
 ├── package.json         # Project configuration
 ├── assets/              # Application icons
-│   ├── icon.svg
-│   ├── icon.icns        # macOS
-│   └── icon.ico         # Windows
+│   ├── icon.svg         # Source icon
+│   ├── icon.icns        # macOS icon
+│   └── icon.ico         # Windows icon
 └── src/
     ├── index.html       # Main application UI
     ├── styles/
-    │   ├── main.css     # Core styles & themes
+    │   ├── main.css     # Core styles and themes
     │   └── components.css
     └── scripts/
         ├── app.js       # Application controller
@@ -81,69 +96,53 @@ netscan-gui/
 3. Click "Quick Scan" to discover devices
 4. View detailed device information in the Devices tab
 
-### Security Audit
+### Navigation
 
-1. Navigate to the Security tab
-2. Click "Run Security Audit"
-3. Review findings and recommendations
+| Tab | Description |
+|-----|-------------|
+| Dashboard | Network overview and quick actions |
+| Devices | List of discovered devices |
+| Topology | Network map visualization |
+| Security | Security audit and findings |
+| Monitor | Real-time device monitoring |
+| MAC Lookup | Manual MAC address lookup |
+| Wake-on-LAN | Wake sleeping devices |
+| Settings | Application preferences |
 
-### Wake-on-LAN
+### Keyboard Shortcuts
 
-1. Go to the WoL tab
-2. Enter the MAC address of the device
-3. Click "Wake Device"
+| Shortcut | Action |
+|----------|--------|
+| Cmd/Ctrl+R | Refresh |
+| Cmd/Ctrl+E | Export |
+| Cmd/Ctrl+, | Settings |
+| Cmd/Ctrl+Q | Quit |
 
-## Development
+### Theme Switching
 
-### Running in Development
-
-```bash
-npm start
-```
-
-### Building Installers
-
-```bash
-# Build for current platform
-npm run dist
-
-# Build for all platforms
-npm run dist:all
-
-# Platform-specific builds
-npm run dist:mac
-npm run dist:win
-```
-
-### Debugging
-
-Press `Cmd/Ctrl + Shift + I` to open DevTools.
+Click the theme toggle in the top-right corner or go to Settings to switch between dark and light themes.
 
 ## Configuration
 
 Settings are stored in:
-- **macOS**: `~/Library/Application Support/NetScan/settings.json`
-- **Windows**: `%APPDATA%/NetScan/settings.json`
+- macOS: `~/Library/Application Support/NetScan/`
+- Windows: `%APPDATA%/NetScan/`
+- Linux: `~/.config/NetScan/`
 
-## Contributing
+## Troubleshooting
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+### Scanning requires elevated privileges
+
+Some scan types (ARP scan, ping sweep) may require administrator/root privileges. Run NetScan with elevated permissions for full functionality.
+
+### Python modules not found
+
+Ensure Python 3.6+ is installed and the NetScan helper modules are in your PATH. The GUI will fall back to basic functionality if Python is unavailable.
+
+### Build errors on Windows
+
+Install Visual Studio Build Tools and ensure Python is in your PATH.
 
 ## License
 
 MIT License - see [LICENSE](../LICENSE) for details.
-
-## Credits
-
-Built with:
-- [Electron](https://www.electronjs.org/)
-- [Node.js](https://nodejs.org/)
-- Python network tools
-
-## Support
-
-- GitHub Issues: [Report a bug](https://github.com/G1A1B1E/NetScan/issues)
-- Documentation: [Full docs](https://g1a1b1e.github.io/NetScan/)
