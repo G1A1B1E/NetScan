@@ -1,0 +1,95 @@
+# NetScan Docker Compose Configuration
+# Provides easy deployment with persistent storage
+
+version: '3.8'
+
+services:
+  netscan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: netscan:latest
+    container_name: netscan
+    
+    # Network mode: host required for network scanning
+    # This allows the container to see the host's network
+    network_mode: host
+    
+    # Capabilities needed for network scanning
+    cap_add:
+      - NET_RAW        # Raw socket access (ping, arp-scan)
+      - NET_ADMIN      # Network administration (interface config)
+    
+    # Volumes for persistent data
+    volumes:
+      - netscan-cache:/app/cache
+      - netscan-logs:/app/logs
+      - netscan-exports:/app/exports
+      - netscan-reports:/app/reports
+      - netscan-data:/app/data
+      # Mount OUI database from host if available
+      - /usr/share/nmap:/usr/share/nmap:ro
+    
+    # Environment variables
+    environment:
+      - NETSCAN_HOME=/app
+      - TZ=${TZ:-UTC}
+    
+    # Keep container running for interactive use
+    stdin_open: true
+    tty: true
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Resource limits (optional, adjust as needed)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 128M
+
+  # Optional: Web interface service
+  netscan-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: netscan:latest
+    container_name: netscan-web
+    
+    # Use bridge network for web interface
+    ports:
+      - "8080:8080"
+    
+    volumes:
+      - netscan-cache:/app/cache:ro
+      - netscan-data:/app/data:ro
+      - netscan-exports:/app/exports
+      - netscan-reports:/app/reports
+    
+    environment:
+      - NETSCAN_HOME=/app
+    
+    # Start web interface
+    command: ["-w", "--port", "8080", "--host", "0.0.0.0"]
+    
+    restart: unless-stopped
+    
+    profiles:
+      - web  # Only start with: docker compose --profile web up
+
+# Named volumes for data persistence
+volumes:
+  netscan-cache:
+    driver: local
+  netscan-logs:
+    driver: local
+  netscan-exports:
+    driver: local
+  netscan-reports:
+    driver: local
+  netscan-data:
+    driver: local
