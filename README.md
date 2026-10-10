@@ -336,15 +336,15 @@ Full documentation is available at: https://g1a1b1e.github.io/NetScan/│   ├�
 
 │   ├── export_helper.py # Multi-format export
 
-- [Installation Guide](https://g1a1b1e.github.io/NetScan/installation.html)│   ├── async_scanner.py # Concurrent network scanning
+- [Installation Guide](https://g1a1b1e.github.io/NetScan/#installation)│   ├── async_scanner.py # Concurrent network scanning
 
-- [Quick Start](https://g1a1b1e.github.io/NetScan/quickstart.html)│   ├── monitor.py       # Real-time device monitoring
+- [Quick Start](https://g1a1b1e.github.io/NetScan/#quickstart)│   ├── monitor.py       # Real-time device monitoring
 
-- [CLI Reference](https://g1a1b1e.github.io/NetScan/cli-reference.html)│   ├── report_generator.py # PDF/HTML reports
+- [CLI Reference](https://g1a1b1e.github.io/NetScan/#cli-reference)│   ├── report_generator.py # PDF/HTML reports
 
-- [Network Scanning](https://g1a1b1e.github.io/NetScan/network-scanning.html)│   ├── config_manager.py # Configuration management
+- [Network Scanning](https://g1a1b1e.github.io/NetScan/#scanning)│   ├── config_manager.py # Configuration management
 
-- [API Reference](https://g1a1b1e.github.io/NetScan/api.html)│   └── web_server.py    # Web interface & REST API
+- [API Reference](https://g1a1b1e.github.io/NetScan/#api)│   └── web_server.py    # Web interface & REST API
 
 │
 

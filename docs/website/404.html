@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting to NetScan Documentation...</title>
+    <script>
+        // Redirect legacy multi-page links to the consolidated single-page documentation with anchor
+        (function() {
+            var path = window.location.pathname;
+            var filename = path.split('/').pop().replace('.html', '');
+            var base = path.substring(0, path.lastIndexOf('/'));
+            if (filename && filename !== '404' && filename !== 'index') {
+                window.location.replace((base ? base + '/' : '') + '#' + filename);
+            } else {
+                window.location.replace((base ? base + '/' : '') + '#overview');
+            }
+        })();
+    </script>
+</head>
+<body style="font-family:sans-serif; text-align:center; padding:50px;">
+    <h2>Redirecting to NetScan Documentation...</h2>
+    <p>If you are not redirected automatically, <a href="index.html">click here to return to the docs</a>.</p>
+</body>
+</html>
+

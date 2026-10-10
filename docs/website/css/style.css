@@ -374,12 +374,12 @@ pre code {
 .content {
     flex: 1;
     margin-left: var(--sidebar-width);
-    margin-right: var(--toc-width);
+    margin-right: 0;
     min-width: 0;
 }
 
 .doc-content {
-    max-width: 800px;
+    max-width: 960px;
     margin: 0 auto;
     padding: var(--spacing-xl) var(--spacing-2xl);
 }
